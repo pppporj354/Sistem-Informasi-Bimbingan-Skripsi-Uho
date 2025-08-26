@@ -1,8 +1,9 @@
-/* UHO Theme Variables */
+/* UHO Theme Variables with Better Hierarchy */
 :root {
     --uho-primary: #0b3d91;
     --uho-primary-600: #0a357e;
     --uho-primary-700: #082d6a;
+    --uho-primary-800: #061f4a;
     --uho-secondary: #1b6dc1;
     --uho-accent: #ffc107;
     --uho-accent-600: #e0a800;
@@ -16,9 +17,15 @@
     --uho-muted: #6b7280;
     --uho-text: #111827;
     --uho-heading: #0b3d91;
-    --uho-sidebar-bg: #0a357e;
+
+    /* Sidebar - Deeper, darker blue for hierarchy */
+    --uho-sidebar-bg: #082d6a;
     --uho-sidebar-active: #0b3d91;
     --uho-sidebar-hover: rgba(255, 255, 255, 0.1);
+
+    /* Navbar - Lighter than sidebar for visual hierarchy */
+    --uho-navbar-bg: #1b6dc1;
+    --uho-navbar-hover: rgba(255, 255, 255, 0.15);
 }
 
 /* Reset and Base Styles */
@@ -61,34 +68,36 @@ body.theme-uho {
     padding-top: 1rem;
 }
 
-/* Sidebar Styling */
+/* Sidebar Styling - Darker for Hierarchy */
 .layout-menu {
     width: 280px;
     background: linear-gradient(
         180deg,
-        var(--uho-primary) 0%,
-        var(--uho-sidebar-bg) 100%
+        var(--uho-sidebar-bg) 0%,
+        var(--uho-primary-800) 100%
     );
-    box-shadow: 4px 0 20px rgba(11, 61, 145, 0.15);
+    box-shadow: 4px 0 20px rgba(8, 45, 106, 0.25);
     border-right: none;
     position: fixed;
     top: 0;
     left: 0;
     bottom: 0;
-    z-index: 1000;
+    z-index: 1001;
     overflow-y: auto;
+    transition: transform 0.3s ease;
 }
 
 .layout-menu .app-brand {
     background: rgba(255, 255, 255, 0.1);
     margin: 16px;
     border-radius: 16px;
-    padding: 20px;
+    padding: 16px;
     backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .layout-menu .menu-item .menu-link {
-    color: rgba(255, 255, 255, 0.8);
+    color: rgba(255, 255, 255, 0.85);
     border-radius: 12px;
     margin: 4px 12px;
     padding: 12px 16px;
@@ -96,6 +105,8 @@ body.theme-uho {
     display: flex;
     align-items: center;
     text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
 }
 
 .layout-menu .menu-item.active > .menu-link,
@@ -103,11 +114,13 @@ body.theme-uho {
     background: var(--uho-sidebar-hover);
     color: white;
     transform: translateX(4px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .layout-menu .menu-item.active > .menu-link {
     background: rgba(255, 193, 7, 0.2);
     border-left: 4px solid var(--uho-accent);
+    color: white;
 }
 
 .layout-menu .menu-header {
@@ -119,20 +132,28 @@ body.theme-uho {
     letter-spacing: 0.8px;
 }
 
-/* Navbar Styling */
+/* Navbar Styling - Lighter for Hierarchy */
 .layout-navbar {
     background: linear-gradient(
         135deg,
-        var(--uho-primary),
-        var(--uho-secondary)
-    );
+        var(--uho-navbar-bg) 0%,
+        var(--uho-secondary) 100%
+    ) !important;
     backdrop-filter: blur(20px);
     border: none;
-    box-shadow: 0 4px 20px rgba(11, 61, 145, 0.2);
+    box-shadow: 0 2px 12px rgba(27, 109, 193, 0.2);
     margin-left: 280px;
     position: sticky;
     top: 0;
-    z-index: 999;
+    z-index: 1000;
+    min-height: 64px !important;
+    padding: 8px 0 !important;
+}
+
+.layout-navbar .navbar-nav .nav-link:hover {
+    background: var(--uho-navbar-hover) !important;
+    border-radius: 8px;
+    transform: translateY(-1px);
 }
 
 /* Main Content Area */
@@ -282,33 +303,127 @@ body.theme-uho {
     color: white;
 }
 
-/* Table Styling */
+/* Enhanced Table Styling with Better Hierarchy */
 .table {
     border-radius: 12px;
     overflow: hidden;
     background: var(--uho-surface);
+    box-shadow: 0 2px 12px rgba(11, 61, 145, 0.05);
 }
 
 .table thead th {
+    background: linear-gradient(
+        135deg,
+        var(--uho-primary) 0%,
+        var(--uho-primary-600) 100%
+    ) !important;
+    color: #fff !important;
+    font-weight: 600;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    position: relative;
+}
+
+.table thead th::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(
+        135deg,
+        var(--uho-accent) 0%,
+        rgba(255, 193, 7, 0.8) 100%
+    );
+}
+
+.table tbody td {
+    padding: 1rem 1.25rem;
+    border-color: rgba(11, 61, 145, 0.08);
+    vertical-align: middle;
+    font-size: 14px;
+    background: var(--uho-surface);
+    transition: all 0.2s ease;
+}
+
+.table tbody tr:nth-child(even) td {
+    background: rgba(11, 61, 145, 0.02);
+}
+
+.table tbody tr:hover td {
+    background: rgba(11, 61, 145, 0.05);
+    transform: scale(1.001);
+    box-shadow: 0 2px 8px rgba(11, 61, 145, 0.1);
+}
+
+/* DataTables Enhancements */
+.dataTables_wrapper {
+    font-family: inherit;
+}
+
+.dataTables_filter input {
+    border-radius: 8px;
+    border: 2px solid var(--uho-border);
+    padding: 8px 12px;
+    background: var(--uho-surface);
+    transition: all 0.3s ease;
+}
+
+.dataTables_filter input:focus {
+    border-color: var(--uho-primary);
+    box-shadow: 0 0 0 3px rgba(11, 61, 145, 0.1);
+    outline: none;
+}
+
+.dataTables_length select {
+    border-radius: 8px;
+    border: 2px solid var(--uho-border);
+    padding: 6px 12px;
+    background: var(--uho-surface);
+    transition: all 0.3s ease;
+}
+
+.dataTables_length select:focus {
+    border-color: var(--uho-primary);
+    outline: none;
+}
+
+.dataTables_paginate .paginate_button {
+    border-radius: 8px;
+    padding: 8px 12px;
+    margin: 0 2px;
+    background: var(--uho-surface);
+    border: 1px solid var(--uho-border);
+    color: var(--uho-primary);
+    transition: all 0.3s ease;
+}
+
+.dataTables_paginate .paginate_button:hover {
+    background: var(--uho-primary);
+    color: white;
+    border-color: var(--uho-primary);
+    transform: translateY(-1px);
+}
+
+.dataTables_paginate .paginate_button.current {
     background: linear-gradient(
         135deg,
         var(--uho-primary),
         var(--uho-secondary)
     );
     color: white;
-    border: none;
-    padding: 1rem;
-    font-weight: 600;
+    border-color: var(--uho-primary);
 }
 
-.table tbody td {
-    padding: 1rem;
-    border-color: var(--uho-border);
-    vertical-align: middle;
-}
-
-.table tbody tr:hover {
-    background: rgba(11, 61, 145, 0.03);
+.dataTables_wrapper .dataTables_scrollHeadInner th {
+    background: linear-gradient(
+        135deg,
+        var(--uho-primary) 0%,
+        var(--uho-primary-600) 100%
+    ) !important;
+    color: #fff !important;
 }
 
 /* Badge Styling */
@@ -316,6 +431,7 @@ body.theme-uho {
     border-radius: 8px;
     font-weight: 500;
     padding: 6px 12px;
+    font-size: 12px;
 }
 
 /* Form Controls */
@@ -325,6 +441,7 @@ body.theme-uho {
     border: 2px solid var(--uho-border);
     padding: 12px 16px;
     transition: all 0.3s ease;
+    background: var(--uho-surface);
 }
 
 .form-control:focus,
@@ -332,6 +449,7 @@ body.theme-uho {
     border-color: var(--uho-primary);
     box-shadow: 0 0 0 3px rgba(11, 61, 145, 0.1);
     outline: none;
+    background: var(--uho-surface);
 }
 
 /* Dropdown Menu */
@@ -340,16 +458,44 @@ body.theme-uho {
     border: 1px solid var(--uho-border);
     box-shadow: 0 8px 25px rgba(11, 61, 145, 0.15);
     background: var(--uho-surface);
+    padding: 8px 0;
 }
 
 .dropdown-item {
     padding: 12px 16px;
     transition: all 0.3s ease;
+    font-size: 14px;
 }
 
 .dropdown-item:hover {
     background: rgba(11, 61, 145, 0.05);
     color: var(--uho-primary);
+}
+
+.dropdown-header {
+    padding: 12px 16px 8px;
+    font-weight: 600;
+    font-size: 12px;
+    color: var(--uho-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Avatar Enhancements */
+.avatar {
+    position: relative;
+}
+
+.avatar-online::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 10px;
+    height: 10px;
+    background: var(--uho-success);
+    border: 2px solid white;
+    border-radius: 50%;
 }
 
 /* Responsive Design */
@@ -361,12 +507,17 @@ body.theme-uho {
 
     .layout-menu.menu-expanded {
         transform: translateX(0);
+        box-shadow: 4px 0 20px rgba(8, 45, 106, 0.4);
     }
 
     .layout-navbar,
     .container-xxl {
         margin-left: 0;
         max-width: 100%;
+    }
+
+    .layout-overlay {
+        display: block;
     }
 }
 
@@ -382,48 +533,82 @@ body.theme-uho {
     .stats-card .card-body {
         padding: 1.25rem;
     }
+
+    .table thead th,
+    .table tbody td {
+        padding: 0.75rem;
+        font-size: 13px;
+    }
+}
+
+/* Layout Overlay */
+.layout-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    display: none;
+}
+
+.layout-overlay.active {
+    opacity: 1;
+    visibility: visible;
 }
 
 /* Utility Classes */
 .text-uho-primary {
-    color: var(--uho-primary);
+    color: var(--uho-primary) !important;
 }
 .text-uho-secondary {
-    color: var(--uho-secondary);
+    color: var(--uho-secondary) !important;
 }
 .text-uho-accent {
-    color: var(--uho-accent);
+    color: var(--uho-accent) !important;
 }
 .text-uho-success {
-    color: var(--uho-success);
+    color: var(--uho-success) !important;
 }
 .text-uho-danger {
-    color: var(--uho-danger);
+    color: var(--uho-danger) !important;
 }
 .text-uho-warning {
-    color: var(--uho-warning);
+    color: var(--uho-warning) !important;
 }
 .text-uho-info {
-    color: var(--uho-info);
+    color: var(--uho-info) !important;
 }
 .text-uho-muted {
-    color: var(--uho-muted);
+    color: var(--uho-muted) !important;
 }
 
 .bg-uho-primary {
-    background-color: var(--uho-primary);
+    background-color: var(--uho-primary) !important;
 }
 .bg-uho-secondary {
-    background-color: var(--uho-secondary);
+    background-color: var(--uho-secondary) !important;
 }
 .bg-uho-accent {
-    background-color: var(--uho-accent);
+    background-color: var(--uho-accent) !important;
 }
 .bg-uho-success {
-    background-color: var(--uho-success);
+    background-color: var(--uho-success) !important;
 }
 .bg-uho-surface {
-    background-color: var(--uho-surface);
+    background-color: var(--uho-surface) !important;
+}
+
+.bg-navbar-theme {
+    background: linear-gradient(
+        135deg,
+        var(--uho-navbar-bg) 0%,
+        var(--uho-secondary) 100%
+    ) !important;
 }
 
 /* Animation Classes */
@@ -458,4 +643,13 @@ body.theme-uho {
     font-size: 4rem;
     opacity: 0.3;
     margin-bottom: 1rem;
+}
+
+/* Logo Styling */
+.uho-logo {
+    transition: all 0.3s ease;
+}
+
+.uho-logo:hover {
+    transform: scale(1.05);
 }

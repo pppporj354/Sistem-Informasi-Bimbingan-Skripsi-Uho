@@ -14,11 +14,14 @@
 
 <aside id="layout-menu" class="layout-menu menu-vertical menu app-sidebar">
     <!-- Brand -->
-    <div class="app-brand demo">
+    <div class="app-brand ">
         <a href="{{ $homeLink }}" class="app-brand-link d-flex align-items-center text-decoration-none">
             <div class="d-flex align-items-center w-100">
-                <div style="width: 45px; height: 45px; background: linear-gradient(135deg, var(--uho-accent), rgba(255, 193, 7, 0.8)); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-right: 12px; box-shadow: 0 4px 15px rgba(255, 193, 7, 0.3);">
-                    <i class="fas fa-university" style="color: var(--uho-primary); font-size: 20px;"></i>
+                <div style="width: 45px; height: 45px; background: rgba(255, 255, 255, 0.15); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-right: 12px; backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2);">
+                    <img src="{{ asset('logo-uho.png') }}"
+                         alt="UHO Logo"
+                         class="uho-logo"
+                         style="width: 32px; height: 32px; object-fit: contain; filter: brightness(0) invert(1);">
                 </div>
                 <div class="flex-grow-1">
                     <div class="brand fw-bold text-white" style="font-size: 18px; line-height: 1.2;">
@@ -41,7 +44,7 @@
         @can('student')
             <!-- Student Menu -->
             <li class="menu-header small text-uppercase mt-3 mb-2">
-                <span class="menu-header-text" style="font-size: 11px; letter-spacing: 0.8px; color: rgba(255, 255, 255, 0.6); font-weight: 600;">
+                <span class="menu-header-text">
                     <i class="fas fa-user-graduate me-2" style="font-size: 12px;"></i>
                     MENU MAHASISWA
                 </span>
@@ -79,7 +82,7 @@
         @can('lecturer')
             <!-- Lecturer Menu -->
             <li class="menu-header small text-uppercase mt-3 mb-2">
-                <span class="menu-header-text" style="font-size: 11px; letter-spacing: 0.8px; color: rgba(255, 255, 255, 0.6); font-weight: 600;">
+                <span class="menu-header-text">
                     <i class="fas fa-chalkboard-teacher me-2" style="font-size: 12px;"></i>
                     MENU DOSEN
                 </span>
@@ -103,7 +106,7 @@
         @can('HoD')
             <!-- Head of Department Menu -->
             <li class="menu-header small text-uppercase mt-3 mb-2">
-                <span class="menu-header-text" style="font-size: 11px; letter-spacing: 0.8px; color: rgba(255, 255, 255, 0.6); font-weight: 600;">
+                <span class="menu-header-text">
                     <i class="fas fa-user-tie me-2" style="font-size: 12px;"></i>
                     MENU KETUA JURUSAN
                 </span>
@@ -127,7 +130,7 @@
         @can('admin')
             <!-- Admin Menu -->
             <li class="menu-header small text-uppercase mt-3 mb-2">
-                <span class="menu-header-text" style="font-size: 11px; letter-spacing: 0.8px; color: rgba(255, 255, 255, 0.6); font-weight: 600;">
+                <span class="menu-header-text">
                     <i class="fas fa-user-shield me-2" style="font-size: 12px;"></i>
                     MENU ADMINISTRATOR
                 </span>
@@ -149,7 +152,7 @@
 
             <!-- Data Master -->
             <li class="menu-header small text-uppercase mt-4 mb-2">
-                <span class="menu-header-text" style="font-size: 11px; letter-spacing: 0.8px; color: rgba(255, 255, 255, 0.6); font-weight: 600;">
+                <span class="menu-header-text">
                     <i class="fas fa-database me-2" style="font-size: 12px;"></i>
                     DATA MASTER
                 </span>
@@ -179,7 +182,7 @@
 
         <!-- Common Menu -->
         <li class="menu-header small text-uppercase mt-4 mb-2">
-            <span class="menu-header-text" style="font-size: 11px; letter-spacing: 0.8px; color: rgba(255, 255, 255, 0.6); font-weight: 600;">
+            <span class="menu-header-text">
                 <i class="fas fa-cog me-2" style="font-size: 12px;"></i>
                 PENGATURAN
             </span>
@@ -195,8 +198,11 @@
         <!-- UHO Branding Footer -->
         <li class="mt-5 px-3">
             <div class="text-center">
-                <div style="width: 70px; height: 70px; background: linear-gradient(135deg, var(--uho-accent), rgba(255, 193, 7, 0.3)); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; backdrop-filter: blur(10px); box-shadow: 0 8px 25px rgba(255, 193, 7, 0.2);">
-                    <i class="fas fa-graduation-cap" style="color: var(--uho-primary); font-size: 28px;"></i>
+                <div style="width: 70px; height: 70px; background: rgba(255, 255, 255, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; backdrop-filter: blur(10px); box-shadow: 0 8px 25px rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.15);">
+                    <img src="{{ asset('logo-uho.png') }}"
+                         alt="UHO Logo"
+                         class="uho-logo"
+                         style="width: 42px; height: 42px; object-fit: contain; filter: brightness(0) invert(1);">
                 </div>
                 <div class="text-white opacity-75" style="font-size: 13px; line-height: 1.4;">
                     <div class="fw-bold">Universitas Halu Oleo</div>
