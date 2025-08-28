@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('students', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('user_id')->constrained()->onDelete('cascade');
-            $table->foreignUuid('lecturer_id_1')->constrained('lecturers')->onDelete('cascade');
+            $table->foreignUuid('lecturer_id_1')->nullable()->constrained('lecturers')->onDelete('cascade');
             $table->foreignUuid('lecturer_id_2')->nullable()->constrained('lecturers')->onDelete('cascade');
             $table->string('nim', 10)->unique();
             $table->unsignedSmallInteger('batch');

@@ -98,6 +98,50 @@
                             @enderror
                         </div>
 
+                        <!-- NIM Input (only for students) -->
+                        <div class="mb-3" id="nim-field" style="{{ old('role') == 'student' ? '' : 'display:none;' }}">
+                            <label for="nim" class="form-label fw-medium">
+                                <i class="fas fa-id-card me-2" style="color: var(--uho-primary);"></i>
+                                NIM (Nomor Induk Mahasiswa)
+                            </label>
+                            <input type="text"
+                                   class="form-control @error('nim') is-invalid @enderror"
+                                   id="nim"
+                                   name="nim"
+                                   placeholder="Masukkan NIM Anda"
+                                   value="{{ old('nim') }}"
+                                   {{ old('role') == 'student' ? 'required' : '' }} />
+                            @error('nim')
+                                <div class="invalid-feedback d-flex align-items-center">
+                                    <i class="fas fa-exclamation-circle me-1"></i>
+                                    {{ $message }}
+                                </div>
+                            @enderror
+                        </div>
+
+                        <!-- Angkatan Input (only for students) -->
+                        <div class="mb-3" id="angkatan-field" style="{{ old('role') == 'student' ? '' : 'display:none;' }}">
+                            <label for="angkatan" class="form-label fw-medium">
+                                <i class="fas fa-calendar me-2" style="color: var(--uho-primary);"></i>
+                                Angkatan
+                            </label>
+                            <input type="number"
+                                   class="form-control @error('angkatan') is-invalid @enderror"
+                                   id="angkatan"
+                                   name="angkatan"
+                                   placeholder="Contoh: 2022"
+                                   value="{{ old('angkatan') }}"
+                                   min="2000"
+                                   max="{{ date('Y') }}"
+                                   {{ old('role') == 'student' ? 'required' : '' }} />
+                            @error('angkatan')
+                                <div class="invalid-feedback d-flex align-items-center">
+                                    <i class="fas fa-exclamation-circle me-1"></i>
+                                    {{ $message }}
+                                </div>
+                            @enderror
+                        </div>
+
                         <!-- Password Input -->
                         <div class="mb-3 form-password-toggle">
                             <label class="form-label fw-medium" for="password">
@@ -239,6 +283,26 @@
                     }
                 });
             });
+
+            // Show/hide NIM and Angkatan fields based on role
+            const roleSelect = document.getElementById('role');
+            const nimField = document.getElementById('nim-field');
+            const angkatanField = document.getElementById('angkatan-field');
+            if (roleSelect) {
+                roleSelect.addEventListener('change', function() {
+                    if (this.value === 'student') {
+                        nimField.style.display = '';
+                        nimField.querySelector('input').setAttribute('required', 'required');
+                        angkatanField.style.display = '';
+                        angkatanField.querySelector('input').setAttribute('required', 'required');
+                    } else {
+                        nimField.style.display = 'none';
+                        nimField.querySelector('input').removeAttribute('required');
+                        angkatanField.style.display = 'none';
+                        angkatanField.querySelector('input').removeAttribute('required');
+                    }
+                });
+            }
         });
     </script>
 </x-auth-layout>

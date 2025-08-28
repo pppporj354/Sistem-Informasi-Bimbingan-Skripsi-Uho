@@ -60,7 +60,24 @@ class RegisterRequest extends FormRequest
             ],
             'terms' => [
                 'accepted'
-            ]
+            ],
+            'nim' => [
+                'required_if:role,student',
+                'nullable',
+                'string',
+                'max:10',
+                'min:4',
+                'unique:students,nim',
+                'regex:/^[0-9]*$/'
+            ],
+            'angkatan' => [
+                'required_if:role,student',
+                'nullable',
+                'integer',
+                'digits:4',
+                'min:2000',
+                'max:' . date('Y'),
+            ],
         ];
     }
 
@@ -97,6 +114,19 @@ class RegisterRequest extends FormRequest
             'password_confirmation.string' => 'Konfirmasi kata sandi harus berupa teks.',
 
             'terms.accepted' => 'Anda harus menyetujui syarat dan ketentuan.',
+
+            'nim.required_if' => 'NIM wajib diisi untuk mahasiswa.',
+            'nim.string' => 'NIM harus berupa teks.',
+            'nim.max' => 'NIM tidak boleh lebih dari 10 karakter.',
+            'nim.min' => 'NIM harus terdiri dari minimal 4 karakter.',
+            'nim.unique' => 'NIM sudah terdaftar.',
+            'nim.regex' => 'NIM hanya boleh mengandung angka.',
+
+            'angkatan.required_if' => 'Angkatan wajib diisi untuk mahasiswa.',
+            'angkatan.integer' => 'Angkatan harus berupa angka.',
+            'angkatan.digits' => 'Angkatan harus terdiri dari 4 digit.',
+            'angkatan.min' => 'Angkatan tidak boleh kurang dari 2000.',
+            'angkatan.max' => 'Angkatan tidak boleh lebih dari tahun ini.',
         ];
     }
 
@@ -114,6 +144,8 @@ class RegisterRequest extends FormRequest
             'password' => 'kata sandi',
             'password_confirmation' => 'konfirmasi kata sandi',
             'terms' => 'syarat dan ketentuan',
+            'nim' => 'NIM',
+            'angkatan' => 'angkatan',
         ];
     }
 }
