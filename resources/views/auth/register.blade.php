@@ -1,13 +1,13 @@
 <x-auth-layout title="Registrasi">
     <div class="row justify-content-center">
-        <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-5">
+       <div class="col-md-6 col-lg-5 col-xl-4">
             <div class="card surface" style="border-radius: 20px; box-shadow: 0 20px 60px rgba(11, 61, 145, 0.15); backdrop-filter: blur(10px); background: rgba(255, 255, 255, 0.95);">
-                <div class="card-body">
+                <div class="card-body p-4">
                     <!-- University Logo and Title -->
                     <div class="text-center mb-4">
-                        <div style="width: 70px; height: 70px; background: var(--uho-accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; box-shadow: 0 8px 20px rgba(255, 193, 7, 0.3);">
-                            <i class="fas fa-user-plus" style="color: var(--uho-primary); font-size: 28px;"></i>
-                        </div>
+                        <img src="{{ asset('logo-uho.png') }}"
+                             alt="UHO Logo"
+                             style="width: 70px; height: 70px; object-fit: contain;">
                         <h4 class="fw-bold mb-2" style="color: var(--uho-primary); font-size: 20px;">
                             Registrasi Akun
                         </h4>
@@ -216,4 +216,29 @@
             </div>
         </div>
     </div>
+
+    <!-- Password Toggle Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const passwordToggles = document.querySelectorAll('.form-password-toggle');
+
+            passwordToggles.forEach(function(toggle) {
+                const passwordInput = toggle.querySelector('input[type="password"]');
+                const toggleButton = toggle.querySelector('.input-group-text');
+                const toggleIcon = toggleButton.querySelector('i');
+
+                toggleButton.addEventListener('click', function() {
+                    if (passwordInput.type === 'password') {
+                        passwordInput.type = 'text';
+                        toggleIcon.classList.remove('bx-hide');
+                        toggleIcon.classList.add('bx-show');
+                    } else {
+                        passwordInput.type = 'password';
+                        toggleIcon.classList.remove('bx-show');
+                        toggleIcon.classList.add('bx-hide');
+                    }
+                });
+            });
+        });
+    </script>
 </x-auth-layout>

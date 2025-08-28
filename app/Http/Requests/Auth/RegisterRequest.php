@@ -12,6 +12,8 @@ class RegisterRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
+     *
+     * @return bool
      */
     public function authorize(): bool
     {
@@ -26,34 +28,92 @@ class RegisterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:255', 'min:2', 'regex:/^[a-zA-Z\s]*$/'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
-            'role' => ['required', 'string', Rule::in(['student', 'lecturer'])],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'terms' => ['required', 'accepted'],
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                'regex:/^[a-zA-Z\s]+$/'
+            ],
+            'email' => [
+                'required',
+                'string',
+                'lowercase',
+                'email',
+                'max:255',
+                Rule::unique(User::class)
+            ],
+            'role' => [
+                'required',
+                'string',
+                Rule::in(['student', 'lecturer'])
+            ],
+            'password' => [
+                'required',
+                'string',
+                'min:8',
+                'confirmed',
+                Rules\Password::defaults()
+            ],
+            'password_confirmation' => [
+                'required',
+                'string'
+            ],
+            'terms' => [
+                'accepted'
+            ]
         ];
     }
 
     /**
-     * Get the validation messages that apply to the request.
+     * Get the error messages for the defined validation rules.
      *
      * @return array<string, string>
      */
     public function messages(): array
     {
         return [
-            'name.required' => 'Nama lengkap harus diisi.',
-            'name.regex' => 'Nama hanya boleh berisi huruf dan spasi.',
-            'name.min' => 'Nama minimal 2 karakter.',
-            'email.required' => 'Email harus diisi.',
-            'email.email' => 'Format email tidak valid.',
-            'email.unique' => 'Email sudah terdaftar dalam sistem.',
-            'role.required' => 'Peran dalam sistem harus dipilih.',
+            'name.required' => 'Nama lengkap wajib diisi.',
+            'name.string' => 'Nama lengkap harus berupa teks.',
+            'name.max' => 'Nama lengkap tidak boleh lebih dari 255 karakter.',
+            'name.regex' => 'Nama lengkap hanya boleh mengandung huruf dan spasi.',
+
+            'email.required' => 'Alamat email wajib diisi.',
+            'email.string' => 'Alamat email harus berupa teks.',
+            'email.email' => 'Format alamat email tidak valid.',
+            'email.max' => 'Alamat email tidak boleh lebih dari 255 karakter.',
+            'email.unique' => 'Alamat email sudah terdaftar dalam sistem.',
+            'email.lowercase' => 'Alamat email harus dalam huruf kecil.',
+
+            'role.required' => 'Peran dalam sistem wajib dipilih.',
+            'role.string' => 'Peran harus berupa teks.',
             'role.in' => 'Peran yang dipilih tidak valid.',
-            'password.required' => 'Password harus diisi.',
-            'password.confirmed' => 'Konfirmasi password tidak cocok.',
-            'terms.required' => 'Anda harus menyetujui syarat dan ketentuan.',
+
+            'password.required' => 'Kata sandi wajib diisi.',
+            'password.string' => 'Kata sandi harus berupa teks.',
+            'password.min' => 'Kata sandi minimal 8 karakter.',
+            'password.confirmed' => 'Konfirmasi kata sandi tidak cocok.',
+
+            'password_confirmation.required' => 'Konfirmasi kata sandi wajib diisi.',
+            'password_confirmation.string' => 'Konfirmasi kata sandi harus berupa teks.',
+
             'terms.accepted' => 'Anda harus menyetujui syarat dan ketentuan.',
+        ];
+    }
+
+    /**
+     * Get custom attributes for validator errors.
+     *
+     * @return array<string, string>
+     */
+    public function attributes(): array
+    {
+        return [
+            'name' => 'nama lengkap',
+            'email' => 'alamat email',
+            'role' => 'peran',
+            'password' => 'kata sandi',
+            'password_confirmation' => 'konfirmasi kata sandi',
+            'terms' => 'syarat dan ketentuan',
         ];
     }
 }

@@ -79,7 +79,7 @@
                                         </div>
                                     </div>
                                     <div class="col-sm-4 text-center text-sm-end">
-                                        <div class="card-body pb-0 px-0 px-md-4 position-relative">
+                                        <div class="card-body pb-0 px-0 px-md-12 position-relative">
                                             <div class="d-flex justify-content-end">
                                                 <div style="width: 100px; height: 100px; background: rgba(255, 255, 255, 0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(10px);">
                                                     <i class="fas fa-graduation-cap" style="font-size: 36px; color: var(--uho-accent);"></i>

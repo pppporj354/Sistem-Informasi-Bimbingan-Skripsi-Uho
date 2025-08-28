@@ -63,3 +63,4 @@ Routes `routes/web.php`; Controllers `app/Http/Controllers/*`; Models `app/Model
 -   Always provide what file code directory you are working in.
 -   Include any relevant context or information that may help in understanding the code.
 -   Dont add unnecessary features or code where it doesn't need to be.
+-   Always make your styling consistent from the existing codebase.
