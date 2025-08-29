@@ -6,52 +6,132 @@ use App\Models\Student;
 use App\Models\Lecturer;
 use App\Models\Guidance;
 use App\Models\ExamResult;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\View\View;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 
 class DashboardController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     *
-     * Show the dashboard with statistics and student guidance data
-     * for admin users only.
+     * Display the admin dashboard
      */
-    public function index(): View|RedirectResponse
+    public function index(): View
     {
-        // Ensure only admin users can access the dashboard
-        if (!Gate::allows('admin')) {
+        // Only admin can access this dashboard
+        if (! Gate::allows('admin')) {
             abort(403);
         }
 
-        // Get students with their guidance relationships
-        // Using more explicit relationship loading for better performance
+        $totalLecturers = Lecturer::count();
+        $totalStudents = Student::count();
+        $totalGuidances = Guidance::count();
+        $totalExamResults = ExamResult::count();
+
         $studentsWithGuidances = Student::with([
             'user',
             'firstSupervisor',
             'secondSupervisor',
             'latestThesis'
         ])
-        ->has('guidances')
         ->withCount('guidances')
+        ->having('guidances_count', '>', 0)
+        ->orderBy('guidances_count', 'desc')
+        ->limit(10)
         ->get();
 
-        // Calculate statistics for the dashboard cards
+        return view('dashboard.index', compact(
+            'totalLecturers',
+            'totalStudents',
+            'totalGuidances',
+            'totalExamResults',
+            'studentsWithGuidances'
+        ));
+    }
+
+    /**
+     * Display the student dashboard
+     */
+    public function student(): View
+    {
+        if (! Gate::allows('student')) {
+            abort(403);
+        }
+
+        $student = Auth::user()->student;
+
+        if (!$student) {
+            abort(403, 'Student profile not found');
+        }
+
+        $hasFirstSupervisor = !is_null($student->lecturer_id_1);
+        $hasSecondSupervisor = !is_null($student->lecturer_id_2);
+
+        $guidanceCount = $student->guidances()->count();
+        $pendingGuidances = $student->guidances()->where('status_request', 'pending')->count();
+        $approvedGuidances = $student->guidances()->where('status_request', 'approved')->count();
+
+        return view('dashboard.student-welcome', compact(
+            'student',
+            'hasFirstSupervisor',
+            'hasSecondSupervisor',
+            'guidanceCount',
+            'pendingGuidances',
+            'approvedGuidances'
+        ));
+    }
+
+    /**
+     * Display the lecturer dashboard
+     */
+    public function lecturer(): View
+    {
+        if (! Gate::allows('lecturer')) {
+            abort(403);
+        }
+
+        $lecturer = Auth::user()->lecturer;
+
+        if (!$lecturer) {
+            abort(403, 'Lecturer profile not found');
+        }
+
+        $studentsAsFirstSupervisor = Student::where('lecturer_id_1', $lecturer->id)->count();
+        $studentsAsSecondSupervisor = Student::where('lecturer_id_2', $lecturer->id)->count();
+        $totalStudents = $studentsAsFirstSupervisor + $studentsAsSecondSupervisor;
+
+        $pendingGuidances = Guidance::where('lecturer_id', $lecturer->id)
+            ->where('status_request', 'pending')
+            ->count();
+
+        return view('dashboard.lecturer-welcome', compact(
+            'lecturer',
+            'studentsAsFirstSupervisor',
+            'studentsAsSecondSupervisor',
+            'totalStudents',
+            'pendingGuidances'
+        ));
+    }
+
+    /**
+     * Display the HoD dashboard
+     */
+    public function hod(): View
+    {
+        if (! Gate::allows('HoD')) {
+            abort(403);
+        }
+
         $totalStudents = Student::count();
         $totalLecturers = Lecturer::count();
         $totalGuidances = Guidance::count();
+        $pendingExamResults = ExamResult::where('status_request', 'pending')->count();
 
-        // Fix: Use the correct variable name that matches the view
-        $totalExamResults = ExamResult::where('status_request', 'approved')->count();
-
-        // Pass all variables to the view using the correct variable names
-        return view('dashboard.index', compact(
-            'studentsWithGuidances',
+        return view('dashboard.hod-welcome', compact(
             'totalStudents',
             'totalLecturers',
             'totalGuidances',
-            'totalExamResults'
+            'pendingExamResults'
         ));
     }
 }

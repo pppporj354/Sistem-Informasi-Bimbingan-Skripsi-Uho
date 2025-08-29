@@ -58,7 +58,7 @@ class RegisteredUserController extends Controller
                     'fullname' => $request->validated()['name'],
                     'nim' => $request->validated()['nim'],
                     'batch' => $request->validated()['angkatan'],
-                    'concentration' => 'RPL', // Default concentration, can be changed later by admin
+                    'concentration' => 'RPL',
                     'lecturer_id_1' => null,
                     'lecturer_id_2' => null,
                 ]);

@@ -15,17 +15,18 @@ use App\Http\Controllers\SetGuidanceController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
-    if(!auth()->check()) {
+    if(!Auth::check()) {
         return view('auth.login');
-    } elseif (auth()->user()->role == 'student') {
-        return redirect()->route('dashboard.bimbingan.index');
-    } elseif (auth()->user()->role == 'lecturer') {
-        return redirect()->route('dashboard.atur-jadwal-bimbingan.index');
-    } elseif (auth()->user()->role == 'HoD') {
-        return redirect()->route('dashboard.aktivitas-bimbingan.index');
-    } elseif (auth()->user()->role == 'admin'){
+    } elseif (Auth::user()->role == 'student') {
+        return redirect()->route('dashboard.student');
+    } elseif (Auth::user()->role == 'lecturer') {
+        return redirect()->route('dashboard.lecturer');
+    } elseif (Auth::user()->role == 'HoD') {
+        return redirect()->route('dashboard.hod');
+    } elseif (Auth::user()->role == 'admin'){
         return redirect()->route('dashboard');
     } else {
         abort(403);
@@ -33,10 +34,22 @@ Route::get('/', function () {
 });
 
 Route::middleware('auth')->group(function () {
-    // Common dashboard route - accessible by all authenticated users
+    // Role-specific dashboard routes
     Route::get('/dashboard', [DashboardController::class, 'index'])
         ->name('dashboard')
         ->middleware('can:admin');
+
+    Route::get('/dashboard/student', [DashboardController::class, 'student'])
+        ->name('dashboard.student')
+        ->middleware('can:student');
+
+    Route::get('/dashboard/lecturer', [DashboardController::class, 'lecturer'])
+        ->name('dashboard.lecturer')
+        ->middleware('can:lecturer');
+
+    Route::get('/dashboard/hod', [DashboardController::class, 'hod'])
+        ->name('dashboard.hod')
+        ->middleware('can:HoD');
 
     // Admin only routes
     Route::middleware('can:admin')->group(function () {
