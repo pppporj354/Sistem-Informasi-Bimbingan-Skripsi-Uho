@@ -60,22 +60,22 @@
                    aria-expanded="false"
                    style="background: rgba(255, 255, 255, 0.1); color: white; border-radius: 8px; padding: 8px 12px;">
                     <div class="avatar avatar-online me-2">
-                        @if(auth()->user()->photo)
-                            <img src="{{ auth()->user()->photoFile }}"
+                        @if(Auth::user()->photo)
+                            <img src="{{ Auth::user()->photoFile }}"
                                  alt="User Avatar"
                                  class="rounded-circle"
                                  style="width: 32px; height: 32px; object-fit: cover; border: 2px solid rgba(255, 255, 255, 0.3);">
                         @else
                             <div class="rounded-circle d-flex align-items-center justify-content-center"
                                  style="width: 32px; height: 32px; background: var(--uho-accent); color: var(--uho-primary); font-weight: 700; font-size: 14px; border: 2px solid rgba(255, 255, 255, 0.3);">
-                                {{ substr(auth()->user()->name, 0, 2) }}
+                                {{ substr(Auth::user()->name, 0, 2) }}
                             </div>
                         @endif
                     </div>
                     <div class="d-none d-sm-block">
-                        <span class="fw-semibold text-white" style="font-size: 14px;">{{ auth()->user()->name }}</span>
+                        <span class="fw-semibold text-white" style="font-size: 14px;">{{ Auth::user()->name }}</span>
                         <div style="font-size: 11px; color: rgba(255, 255, 255, 0.8); line-height: 1.2;">
-                            {{ ucfirst(str_replace('_', ' ', auth()->user()->role)) }}
+                            {{ ucfirst(str_replace('_', ' ', Auth::user()->role)) }}
                         </div>
                     </div>
 
@@ -86,9 +86,9 @@
                         <div class="py-3 px-3">
                             <div class="d-flex align-items-center">
                                 <div class="flex-shrink-0 me-3">
-                                    @if(auth()->user()->photo)
+                                    @if(Auth::user()->photo)
                                         <div class="avatar avatar-online">
-                                            <img src="{{ auth()->user()->photoFile }}"
+                                            <img src="{{ Auth::user()->photoFile }}"
                                                  alt="User Avatar"
                                                  class="rounded-circle"
                                                  style="width: 40px; height: 40px; object-fit: cover;">
@@ -96,13 +96,13 @@
                                     @else
                                         <div class="rounded-circle d-flex align-items-center justify-content-center"
                                              style="width: 40px; height: 40px; background: var(--uho-accent); color: var(--uho-primary); font-weight: 700; font-size: 16px;">
-                                            {{ substr(auth()->user()->name, 0, 2) }}
+                                            {{ substr(Auth::user()->name, 0, 2) }}
                                         </div>
                                     @endif
                                 </div>
                                 <div class="flex-grow-1">
-                                    <span class="fw-semibold d-block" style="color: white;">{{ auth()->user()->name }}</span>
-                                    <small class="text-white opacity-75">{{ auth()->user()->email }}</small>
+                                    <span class="fw-semibold d-block" style="color: white;">{{ Auth::user()->name }}</span>
+                                    <small class="text-white opacity-75">{{ Auth::user()->email }}</small>
                                 </div>
                             </div>
                         </div>

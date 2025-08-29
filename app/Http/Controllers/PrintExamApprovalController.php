@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\HeadOfDepartement;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Auth;
+
 
 class PrintExamApprovalController extends Controller
 {
@@ -15,7 +17,7 @@ class PrintExamApprovalController extends Controller
             abort(403);
         }
 
-        $student = auth()->user()->student;
+        $student = Auth::user()->student;
         $headOfDepartement = HeadOfDepartement::first();
 
         return view('dashboard.print.persetujuan-ujian.index', compact('student', 'headOfDepartement'));

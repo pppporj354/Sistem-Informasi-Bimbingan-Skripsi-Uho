@@ -12,6 +12,7 @@ use Illuminate\View\View;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Auth;
 
 class GuidanceController extends Controller
 {
@@ -31,7 +32,7 @@ class GuidanceController extends Controller
         $text = 'Anda tidak akan bisa mengembalikannya!';
         confirmDelete($title, $text);
 
-        $student = auth()->user()->student;
+        $student = Auth::user()->student;
 
         if (request()->routeIs('dashboard.bimbingan-1.index')) {
             $guidances = Guidance::where('student_id', $student->id)
@@ -85,7 +86,7 @@ class GuidanceController extends Controller
     {
         $thesis_title = null;
 
-        $latestGuidance = Guidance::where('student_id', auth()->user()->student->id)
+        $latestGuidance = Guidance::where('student_id', Auth::user()->student->id)
             ->latest()
             ->first();
 
@@ -109,7 +110,7 @@ class GuidanceController extends Controller
     {
         $validatedData = $request->validated();
 
-        $student = auth()->user()->student;
+        $student = Auth::user()->student;
 
         DB::beginTransaction();
 
@@ -206,6 +207,9 @@ class GuidanceController extends Controller
                 return redirect()->route('dashboard.bimbingan-2.index')->with('toast_error', 'Bimbingan gagal ditambahkan');
             }
         }
+
+        // Default return if no route matches above
+        return redirect()->route('dashboard.bimbingan.index')->with('toast_success', 'Bimbingan berhasil ditambahkan');
     }
 
     /**
@@ -218,6 +222,7 @@ class GuidanceController extends Controller
         } elseif (request()->routeIs('dashboard.bimbingan-2.show')) {
             return view('dashboard.bimbingan.dosen-pembimbing-2.show', compact('bimbingan'));
         }
+        return view('dashboard.bimbingan.show', compact('bimbingan'));
     }
 
     /**
@@ -233,6 +238,8 @@ class GuidanceController extends Controller
             return view('dashboard.bimbingan.dosen-pembimbing-1.edit', compact('bimbingan'));
         } elseif (request()->routeIs('dashboard.bimbingan-2.edit')) {
             return view('dashboard.bimbingan.dosen-pembimbing-2.edit', compact('bimbingan'));
+        } else {
+            return view('dashboard.bimbingan.edit', compact('bimbingan'));
         }
     }
 
@@ -260,7 +267,7 @@ class GuidanceController extends Controller
 
             if ($request->hasFile('file-skripsi')) {
                 $file = $request->file('file-skripsi');
-                $fileName = time() . '-' . auth()->user()->student->nim . '.' . $file->getClientOriginalExtension();
+                $fileName = time() . '-' . Auth::user()->student->nim . '.' . $file->getClientOriginalExtension();
                 $file->storeAs('public/file/skripsi', $fileName);
                 $bimbingan->thesis->file = $fileName;
             }
@@ -279,8 +286,13 @@ class GuidanceController extends Controller
                 return redirect()->route('dashboard.bimbingan-1.index')->with('toast_error', 'Bimbingan gagal diperbarui');
             } elseif (request()->routeIs('dashboard.bimbingan-2.update')) {
                 return redirect()->route('dashboard.bimbingan-2.index')->with('toast_error', 'Bimbingan gagal diperbarui');
+            } else {
+                return redirect()->route('dashboard.bimbingan.index')->with('toast_error', 'Bimbingan gagal diperbarui');
             }
         }
+
+        // Default return if no route matches above
+        return redirect()->route('dashboard.bimbingan.index')->with('toast_success', 'Bimbingan berhasil diperbarui');
     }
 
     /**
@@ -301,6 +313,8 @@ class GuidanceController extends Controller
                 return redirect()->route('dashboard.bimbingan-1.index')->with('toast_success', 'Bimbingan berhasil dihapus');
             } elseif (request()->routeIs('dashboard.bimbingan-2.destroy')) {
                 return redirect()->route('dashboard.bimbingan-2.index')->with('toast_success', 'Bimbingan berhasil dihapus');
+            } else {
+                return redirect()->route('dashboard.bimbingan.index')->with('toast_success', 'Bimbingan berhasil dihapus');
             }
         } catch (\Exception $e) {
             DB::rollBack();
@@ -308,6 +322,8 @@ class GuidanceController extends Controller
                 return redirect()->route('dashboard.bimbingan-1.index')->with('toast_error', 'Bimbingan gagal dihapus');
             } elseif (request()->routeIs('dashboard.bimbingan-2.destroy')) {
                 return redirect()->route('dashboard.bimbingan-2.index')->with('toast_error', 'Bimbingan gagal dihapus');
+            } else {
+                return redirect()->route('dashboard.bimbingan.index')->with('toast_error', 'Bimbingan gagal dihapus');
             }
         }
     }

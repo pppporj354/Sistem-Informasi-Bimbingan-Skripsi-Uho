@@ -6,6 +6,7 @@ use App\Models\Guidance;
 use App\Models\Student;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Auth;
 
 class GuidedStudentController extends Controller
 {
@@ -21,8 +22,8 @@ class GuidedStudentController extends Controller
      */
     public function index(): View
     {
-        $students = Student::where('lecturer_id_1', auth()->user()->lecturer->id)
-            ->orWhere('lecturer_id_2', auth()->user()->lecturer->id)
+        $students = Student::where('lecturer_id_1', Auth::user()->lecturer->id)
+            ->orWhere('lecturer_id_2', Auth::user()->lecturer->id)
             ->with(['guidance', 'user', 'thesis'])
             ->get();
 

@@ -1,7 +1,7 @@
 
 <x-dashboard-layout title="Dashboard Mahasiswa">
     <x-slot name="header">
-        Selamat Datang, {{ auth()->user()->name }}!
+        Selamat Datang, {{ Auth::user()->name }}!
     </x-slot>
     <x-slot name="header_subtitle">
         Sistem Informasi Bimbingan Skripsi - Universitas Halu Oleo

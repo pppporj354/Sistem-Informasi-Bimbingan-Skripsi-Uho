@@ -11,8 +11,8 @@
         $baseUrl = 'http://' . $baseUrl;
     }
 
-    $isUsernameAndPasswordSame = auth()->user()->username === auth()->user()->email ||
-                                (auth()->user()->username && auth()->user()->username === 'password');
+    $isUsernameAndPasswordSame = Auth::user()->username === Auth::user()->email ||
+                                (Auth::user()->username && Auth::user()->username === 'password');
 @endphp
 
 <head>

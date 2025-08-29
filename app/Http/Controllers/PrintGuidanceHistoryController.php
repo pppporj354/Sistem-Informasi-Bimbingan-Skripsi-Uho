@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\HeadOfDepartement;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Auth;
 
 class PrintGuidanceHistoryController extends Controller
 {
@@ -16,7 +17,7 @@ class PrintGuidanceHistoryController extends Controller
             abort(403);
         }
 
-        $student = auth()->user()->student;
+        $student = Auth::user()->student;
         $lecturer_id = null;
 
         if ($request->routeIs('dashboard.bimbingan-1.print')) {

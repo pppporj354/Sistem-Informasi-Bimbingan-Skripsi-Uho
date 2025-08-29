@@ -1,13 +1,13 @@
 @php
     $homeLink = null;
 
-    if(auth()->user()->role == 'student') {
+    if(Auth::user()->role == 'student') {
         $homeLink = route('dashboard.bimbingan.index');
-    } elseif(auth()->user()->role == 'lecturer') {
+    } elseif(Auth::user()->role == 'lecturer') {
         $homeLink = route('dashboard.atur-jadwal-bimbingan.index');
-    } elseif(auth()->user()->role == 'HoD') {
+    } elseif(Auth::user()->role == 'HoD') {
         $homeLink = route('dashboard.aktivitas-bimbingan.index');
-    } elseif(auth()->user()->role == 'admin') {
+    } elseif(Auth::user()->role == 'admin') {
         $homeLink = route('dashboard');
     }
 @endphp

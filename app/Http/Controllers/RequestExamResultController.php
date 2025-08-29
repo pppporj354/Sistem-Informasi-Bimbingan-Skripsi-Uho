@@ -6,6 +6,7 @@ use App\Models\ExamResult;
 use App\Models\Student;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Auth;
 
 class RequestExamResultController extends Controller
 {
@@ -20,12 +21,12 @@ class RequestExamResultController extends Controller
 
         $requestExams = null;
 
-        if(auth()->user()->role =='admin') {
+        if(Auth::user()->role =='admin') {
             $requestExams = ExamResult::with('student', 'student.user', 'thesis')->get();
         }
 
-        if(auth()->user()->role =='lecturer') {
-            $lecturer = auth()->user()->lecturer;
+        if(Auth::user()->role =='lecturer') {
+            $lecturer = Auth::user()->lecturer;
 
             $students = Student::where('lecturer_id_1', $lecturer->id)
                 ->orWhere('lecturer_id_2', $lecturer->id)

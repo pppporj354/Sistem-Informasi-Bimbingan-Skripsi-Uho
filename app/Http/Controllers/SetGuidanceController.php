@@ -10,6 +10,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Auth;
 
 class SetGuidanceController extends Controller
 {
@@ -24,7 +25,7 @@ class SetGuidanceController extends Controller
      */
     public function index(): View
     {
-        $lecturerId = auth()->user()->lecturer->id;
+        $lecturerId = Auth::user()->lecturer->id;
 
         $students = Student::where('lecturer_id_1', $lecturerId)
             ->orWhere('lecturer_id_2', $lecturerId)
@@ -86,7 +87,7 @@ class SetGuidanceController extends Controller
             }
 
             if($atur_jadwal_bimbingan->guidance_number >= 6 && $validatedData['status_request'] == 'approved') {
-                $lecture = $atur_jadwal_bimbingan->student->firstSupervisor->id == auth()->user()->lecturer->id ? 'approval_lecturer_1' : 'approval_lecturer_2';
+                $lecture = $atur_jadwal_bimbingan->student->firstSupervisor->id == Auth::user()->lecturer->id ? 'approval_lecturer_1' : 'approval_lecturer_2';
 
                 $thesis = Thesis::where('student_id', $atur_jadwal_bimbingan->student_id)->latest()->first();
 
