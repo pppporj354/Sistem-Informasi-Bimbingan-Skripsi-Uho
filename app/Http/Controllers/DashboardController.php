@@ -35,7 +35,8 @@ class DashboardController extends Controller
             'latestThesis'
         ])
         ->withCount('guidances')
-        ->having('guidances_count', '>', 0)
+        // ->having('guidances_count', '>', 0)
+        ->where('guidances_count', '>', 0)
         ->orderBy('guidances_count', 'desc')
         ->limit(10)
         ->get();
