@@ -19,9 +19,7 @@ class StudentController extends Controller
 {
     public function __construct()
     {
-        if (!Gate::allows('admin')) {
-            abort(403);
-        }
+    $this->middleware('can:admin');
     }
 
     /**
@@ -82,6 +80,8 @@ class StudentController extends Controller
             $student->nim = $validatedData['nim'];
             $student->batch = $validatedData['angkatan'];
             $student->concentration = $validatedData['konsentrasi'];
+            $student->department = $validatedData['jurusan'] ?? null;
+            $student->faculty = $validatedData['fakultas'] ?? null;
             $student->phone_number = $validatedData['no-hp'];
             $student->address = $validatedData['alamat'];
 
@@ -160,6 +160,8 @@ class StudentController extends Controller
             $mahasiswa->lecturer_id_2 = $validatedData['lecturer_id_2'];
             $mahasiswa->batch = $validatedData['angkatan'];
             $mahasiswa->concentration = $validatedData['konsentrasi'];
+            $mahasiswa->department = $validatedData['jurusan'] ?? $mahasiswa->department;
+            $mahasiswa->faculty = $validatedData['fakultas'] ?? $mahasiswa->faculty;
             $mahasiswa->phone_number = $validatedData['no-hp'];
             $mahasiswa->address = $validatedData['alamat'];
 

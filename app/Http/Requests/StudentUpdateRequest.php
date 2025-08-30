@@ -31,6 +31,8 @@ class StudentUpdateRequest extends FormRequest
             'fullname' => ['required', 'string', 'max:255', 'min:2', 'regex:/^[a-zA-Z\s]*$/'],
             'angkatan' => ['required', 'integer', 'digits:4', 'min:1900', 'max:' . (date('Y'))],
             'konsentrasi' => ['required', 'string', 'in:rpl,multimedia,tkj'],
+            'jurusan' => ['nullable', 'string', 'max:255'],
+            'fakultas' => ['nullable', 'string', 'max:255'],
             'no-hp' => ['nullable', 'string', 'min:9', 'max:20', 'regex:/^08[0-9]*$/'],
             'alamat' => ['nullable', 'string', 'max:255'],
             'foto' => ['nullable', 'image', 'mimes:png,jpg,jpeg', 'max:2048'],

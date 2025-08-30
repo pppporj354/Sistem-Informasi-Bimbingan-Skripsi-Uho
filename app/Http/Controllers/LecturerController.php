@@ -18,9 +18,7 @@ class LecturerController extends Controller
 {
     public function __construct()
     {
-        if (!Gate::allows('admin')) {
-            abort(403);
-        }
+    $this->middleware('can:admin');
     }
 
     /**
@@ -103,7 +101,7 @@ class LecturerController extends Controller
         $text = 'Anda tidak akan bisa mengembalikannya!';
         confirmDelete($title, $text);
 
-        
+
         $students = Student::where('lecturer_id_1', $dosen->id)
         ->orWhere('lecturer_id_2', $dosen->id)
         ->with('user')

@@ -55,6 +55,18 @@
                 <x-input-error class="mt-2" :messages="$errors->get('konsentrasi')" />
             </div>
             <div class="mb-3">
+                <label class="form-label" for="jurusan">Jurusan</label>
+                <input type="text" class="form-control {{ $errors->get('jurusan') ? 'border-danger' : '' }}"
+                    id="jurusan" name="jurusan" placeholder="Jurusan" value="{{ old('jurusan') }}" />
+                <x-input-error class="mt-2" :messages="$errors->get('jurusan')" />
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="fakultas">Fakultas</label>
+                <input type="text" class="form-control {{ $errors->get('fakultas') ? 'border-danger' : '' }}"
+                    id="fakultas" name="fakultas" placeholder="Fakultas" value="{{ old('fakultas') }}" />
+                <x-input-error class="mt-2" :messages="$errors->get('fakultas')" />
+            </div>
+            <div class="mb-3">
                 <label for="lecturer_id_1" class="form-label">Dosen Pembimbing I <span
                         style="font-size:14px;color:red">*</span></label>
                 <x-select :options="$lecturers" key="fullname" placeholders="Pilih Dosen Pembimbing I" id="lecturer_id_1"

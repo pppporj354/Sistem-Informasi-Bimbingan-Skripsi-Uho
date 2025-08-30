@@ -59,6 +59,8 @@ class RegisteredUserController extends Controller
                     'nim' => $request->validated()['nim'],
                     'batch' => $request->validated()['angkatan'],
                     'concentration' => 'RPL',
+                    'department' => null,
+                    'faculty' => null,
                     'lecturer_id_1' => null,
                     'lecturer_id_2' => null,
                 ]);
