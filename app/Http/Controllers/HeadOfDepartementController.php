@@ -18,9 +18,7 @@ class HeadOfDepartementController extends Controller
 {
     public function __construct()
     {
-        if (!Gate::allows('admin')) {
-            abort(403);
-        }
+    $this->middleware('can:admin');
     }
     /**
      * Display a listing of the resource.

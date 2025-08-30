@@ -54,9 +54,9 @@ Route::middleware('auth')->group(function () {
     // Admin only routes
     Route::middleware('can:admin')->group(function () {
         Route::resource('/dashboard/kelola-user', UserController::class)->names('dashboard.kelola-user');
-        Route::resource('/dosen', LecturerController::class)->names('dashboard.lecturer');
-        Route::resource('/mahasiswa', StudentController::class)->names('dashboard.student');
-        Route::resource('/ketua-jurusan', HeadOfDepartementController::class)->names('dashboard.kajur');
+        Route::resource('/dashboard/dosen', LecturerController::class)->names('dashboard.lecturer');
+        Route::resource('/dashboard/mahasiswa', StudentController::class)->names('dashboard.student');
+        Route::resource('/dashboard/ketua-jurusan', HeadOfDepartementController::class)->names('dashboard.kajur');
     });
 
     // Head of Department routes

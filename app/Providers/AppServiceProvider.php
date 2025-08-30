@@ -24,7 +24,7 @@ class AppServiceProvider extends ServiceProvider
     {
         // Allow admin to bypass all gate checks
         Gate::before(function (User $user, string $ability) {
-            return $user->role === 'admin' ? true : null;
+            return strtolower($user->role) === 'admin' ? true : null;
         });
 
         Gate::define('admin', function (User $user) {
