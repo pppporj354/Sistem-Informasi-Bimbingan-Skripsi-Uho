@@ -18,7 +18,19 @@ class Student extends Model
      *
      * @var array<int, string>
      */
-    protected $fillable = ['user_id', 'lecturer_id', 'nim', 'batch', 'concentration', 'phone_number', 'address', 'photo'];
+    protected $fillable = [
+        'user_id',
+        'lecturer_id_1',
+        'lecturer_id_2',
+        'nim',
+        'batch',
+        'concentration',
+        'department',
+        'faculty',
+        'phone_number',
+        'address',
+        'photo'
+    ];
 
     /**
      * Get the user that owns the student.

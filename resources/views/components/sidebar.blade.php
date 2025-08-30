@@ -41,7 +41,7 @@
 
     <div class="menu-inner-shadow"></div>
     <ul class="menu-inner py-3">
-        @can('student')
+    @if(Auth::user()->role === 'student')
             <!-- Student Menu -->
             <li class="menu-header small text-uppercase mt-3 mb-2">
                 <span class="menu-header-text">
@@ -77,9 +77,9 @@
                     </li>
                 </ul>
             </li>
-        @endcan
+    @endif
 
-        @can('lecturer')
+    @if(Auth::user()->role === 'lecturer')
             <!-- Lecturer Menu -->
             <li class="menu-header small text-uppercase mt-3 mb-2">
                 <span class="menu-header-text">
@@ -95,15 +95,15 @@
                 </a>
             </li>
 
-            <li class="menu-item {{ request()->routeIs('dashboard.bimbingan-mahasiswa.*') ? 'active' : '' }}">
-                <a href="{{ route('dashboard.bimbingan-mahasiswa.index') }}" class="menu-link">
+            <li class="menu-item {{ request()->routeIs('dashboard.mahasiswa-bimbingan.*') ? 'active' : '' }}">
+                <a href="{{ route('dashboard.mahasiswa-bimbingan.index') }}" class="menu-link">
                     <i class="menu-icon fas fa-users me-2"></i>
                     <div data-i18n="Bimbingan Mahasiswa">Mahasiswa Bimbingan</div>
                 </a>
             </li>
-        @endcan
+    @endif
 
-        @can('HoD')
+    @if(Auth::user()->role === 'HoD')
             <!-- Head of Department Menu -->
             <li class="menu-header small text-uppercase mt-3 mb-2">
                 <span class="menu-header-text">
@@ -125,9 +125,9 @@
                     <div data-i18n="Ujian Hasil">Persetujuan Ujian</div>
                 </a>
             </li>
-        @endcan
+    @endif
 
-        @can('admin')
+    @if(Auth::user()->role === 'admin')
             <!-- Admin Menu -->
             <li class="menu-header small text-uppercase mt-3 mb-2">
                 <span class="menu-header-text">
@@ -178,7 +178,7 @@
                     <div data-i18n="Kajur">Ketua Jurusan</div>
                 </a>
             </li>
-        @endcan
+    @endif
 
         <!-- Common Menu -->
         <li class="menu-header small text-uppercase mt-4 mb-2">
