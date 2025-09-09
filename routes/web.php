@@ -14,6 +14,7 @@ use App\Http\Controllers\RequestExamResultController;
 use App\Http\Controllers\SetGuidanceController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\MonitoringController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -61,6 +62,11 @@ Route::middleware('auth')->group(function () {
 
     // Head of Department routes
     Route::middleware('can:HoD')->group(function () {
+        // Monitoring
+        Route::get('/monitoring/bimbingan', [MonitoringController::class, 'index'])->name('dashboard.monitoring.index');
+        Route::get('/monitoring/bimbingan/export', [MonitoringController::class, 'export'])->name('dashboard.monitoring.export');
+        Route::get('/monitoring/workload', [MonitoringController::class, 'workload'])->name('dashboard.monitoring.workload');
+        Route::get('/monitoring/progress', [MonitoringController::class, 'progress'])->name('dashboard.monitoring.progress');
         Route::get('/aktivitas-bimbingan', [GuidanceActivityController::class, 'index'])->name('dashboard.aktivitas-bimbingan.index');
         Route::get('/aktivitas-bimbingan/{aktivitas_bimbingan}', [GuidanceActivityController::class, 'show'])->name('dashboard.aktivitas-bimbingan.show');
         Route::get('/aktivitas-bimbingan/{aktivitas_bimbingan}/edit', [GuidanceActivityController::class, 'edit'])->name('dashboard.aktivitas-bimbingan.edit');

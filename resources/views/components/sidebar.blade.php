@@ -125,6 +125,34 @@
                     <div data-i18n="Ujian Hasil">Persetujuan Ujian</div>
                 </a>
             </li>
+
+            <li class="menu-item {{ request()->routeIs('dashboard.monitoring.*') ? 'active open' : '' }}">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class="menu-icon fas fa-chart-line me-2"></i>
+                    <div data-i18n="Monitoring">Monitoring</div>
+                    <i class="menu-arrow fas fa-chevron-down ms-auto"></i>
+                </a>
+                <ul class="menu-sub">
+                    <li class="menu-item {{ request()->routeIs('dashboard.monitoring.index') ? 'active' : '' }}">
+                        <a href="{{ route('dashboard.monitoring.index') }}" class="menu-link">
+                            <i class="fas fa-list me-2"></i>
+                            <div data-i18n="Bimbingan">Daftar Bimbingan</div>
+                        </a>
+                    </li>
+                    <li class="menu-item {{ request()->routeIs('dashboard.monitoring.workload') ? 'active' : '' }}">
+                        <a href="{{ route('dashboard.monitoring.workload') }}" class="menu-link">
+                            <i class="fas fa-chart-bar me-2"></i>
+                            <div data-i18n="Workload">Workload Dosen</div>
+                        </a>
+                    </li>
+                    <li class="menu-item {{ request()->routeIs('dashboard.monitoring.progress') ? 'active' : '' }}">
+                        <a href="{{ route('dashboard.monitoring.progress') }}" class="menu-link">
+                            <i class="fas fa-chart-line me-2"></i>
+                            <div data-i18n="Progress">Progress Mahasiswa</div>
+                        </a>
+                    </li>
+                </ul>
+            </li>
     @endif
 
     @if(Auth::user()->role === 'admin')
@@ -148,6 +176,34 @@
                     <i class="menu-icon fas fa-users-cog me-2"></i>
                     <div data-i18n="Kelola User">Kelola Pengguna</div>
                 </a>
+            </li>
+
+            <li class="menu-item {{ request()->routeIs('dashboard.monitoring.*') ? 'active open' : '' }}">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class="menu-icon fas fa-chart-line me-2"></i>
+                    <div data-i18n="Monitoring">Monitoring</div>
+                    <i class="menu-arrow fas fa-chevron-down ms-auto"></i>
+                </a>
+                <ul class="menu-sub">
+                    <li class="menu-item {{ request()->routeIs('dashboard.monitoring.index') ? 'active' : '' }}">
+                        <a href="{{ route('dashboard.monitoring.index') }}" class="menu-link">
+                            <i class="fas fa-list me-2"></i>
+                            <div data-i18n="Bimbingan">Daftar Bimbingan</div>
+                        </a>
+                    </li>
+                    <li class="menu-item {{ request()->routeIs('dashboard.monitoring.workload') ? 'active' : '' }}">
+                        <a href="{{ route('dashboard.monitoring.workload') }}" class="menu-link">
+                            <i class="fas fa-chart-bar me-2"></i>
+                            <div data-i18n="Workload">Workload Dosen</div>
+                        </a>
+                    </li>
+                    <li class="menu-item {{ request()->routeIs('dashboard.monitoring.progress') ? 'active' : '' }}">
+                        <a href="{{ route('dashboard.monitoring.progress') }}" class="menu-link">
+                            <i class="fas fa-chart-line me-2"></i>
+                            <div data-i18n="Progress">Progress Mahasiswa</div>
+                        </a>
+                    </li>
+                </ul>
             </li>
 
             <!-- Data Master -->

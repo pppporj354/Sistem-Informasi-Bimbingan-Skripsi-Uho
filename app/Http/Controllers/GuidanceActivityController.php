@@ -12,9 +12,12 @@ class GuidanceActivityController extends Controller
 {
     public function __construct()
     {
-        if (!Gate::allows('HoD') && !Gate::allows('admin')) {
-            abort(403);
-        }
+        $this->middleware(function ($request, $next) {
+            if (!Gate::allows('HoD') && !Gate::allows('admin')) {
+                abort(403);
+            }
+            return $next($request);
+        });
     }
 
     /**
