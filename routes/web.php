@@ -62,14 +62,24 @@ Route::middleware('auth')->group(function () {
         Route::resource('/dashboard/mahasiswa', StudentController::class)->names('dashboard.student');
         Route::resource('/dashboard/ketua-jurusan', HeadOfDepartementController::class)->names('dashboard.kajur');
 
+        // Analytics
+        Route::get('/analytics', [AnalyticsController::class, 'index'])->name('dashboard.analytics.index');
+        Route::get('/analytics/guidance-data', [AnalyticsController::class, 'getGuidanceData'])->name('dashboard.analytics.guidance-data');
+        Route::get('/analytics/lecturer-performance', [AnalyticsController::class, 'getLecturerPerformance'])->name('dashboard.analytics.lecturer-performance');
+        Route::get('/analytics/student-progress', [AnalyticsController::class, 'getStudentProgress'])->name('dashboard.analytics.student-progress');
+
+        // Monitoring
+        Route::get('/monitoring/bimbingan', [MonitoringController::class, 'index'])->name('dashboard.monitoring.index');
+        Route::get('/monitoring/bimbingan/export', [MonitoringController::class, 'export'])->name('dashboard.monitoring.export');
+        Route::get('/monitoring/workload', [MonitoringController::class, 'workload'])->name('dashboard.monitoring.workload');
+        Route::get('/monitoring/progress', [MonitoringController::class, 'progress'])->name('dashboard.monitoring.progress');
+
         // Audit Trail
         Route::get('/audit', [AuditController::class, 'index'])->name('dashboard.audit.index');
         Route::get('/audit/{auditLog}', [AuditController::class, 'show'])->name('dashboard.audit.show');
         Route::get('/audit-activity', [AuditController::class, 'getActivity'])->name('dashboard.audit.activity');
         Route::get('/audit/export', [AuditController::class, 'export'])->name('dashboard.audit.export');
-    });
-
-    // Head of Department routes
+    });    // Head of Department routes
     Route::middleware('can:HoD')->group(function () {
         // Monitoring
         Route::get('/monitoring/bimbingan', [MonitoringController::class, 'index'])->name('dashboard.monitoring.index');

@@ -107,7 +107,7 @@ class AuditController extends Controller
 
     private function getDailyActivity()
     {
-        return AuditLog::selectRaw('DATE(created_at) as date, COUNT(*) as count')
+        return AuditLog::selectRaw('date(created_at) as date, COUNT(*) as count')
             ->where('created_at', '>=', Carbon::now()->subDays(30))
             ->groupBy('date')
             ->orderBy('date', 'asc')
@@ -122,7 +122,7 @@ class AuditController extends Controller
 
     private function getWeeklyActivity()
     {
-        return AuditLog::selectRaw('YEAR(created_at) as year, WEEK(created_at) as week, COUNT(*) as count')
+        return AuditLog::selectRaw('strftime("%Y", created_at) as year, strftime("%W", created_at) as week, COUNT(*) as count')
             ->where('created_at', '>=', Carbon::now()->subWeeks(12))
             ->groupBy('year', 'week')
             ->orderBy('year', 'asc')
@@ -138,7 +138,7 @@ class AuditController extends Controller
 
     private function getMonthlyActivity()
     {
-        return AuditLog::selectRaw('YEAR(created_at) as year, MONTH(created_at) as month, COUNT(*) as count')
+        return AuditLog::selectRaw('strftime("%Y", created_at) as year, strftime("%m", created_at) as month, COUNT(*) as count')
             ->where('created_at', '>=', Carbon::now()->subMonths(12))
             ->groupBy('year', 'month')
             ->orderBy('year', 'asc')

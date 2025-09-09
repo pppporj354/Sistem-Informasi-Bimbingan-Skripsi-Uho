@@ -41,8 +41,8 @@ class AnalyticsController extends Controller
 
         // Monthly guidance trends (last 12 months)
         $monthlyGuidances = Guidance::select(
-                DB::raw('YEAR(created_at) as year'),
-                DB::raw('MONTH(created_at) as month'),
+                DB::raw('strftime("%Y", created_at) as year'),
+                DB::raw('strftime("%m", created_at) as month'),
                 DB::raw('COUNT(*) as count')
             )
             ->where('created_at', '>=', Carbon::now()->subMonths(12))
@@ -87,8 +87,8 @@ class AnalyticsController extends Controller
 
         // Weekly guidance trends (last 8 weeks)
         $weeklyGuidances = Guidance::select(
-                DB::raw('YEAR(created_at) as year'),
-                DB::raw('WEEK(created_at) as week'),
+                DB::raw('strftime("%Y", created_at) as year'),
+                DB::raw('strftime("%W", created_at) as week'),
                 DB::raw('COUNT(*) as count')
             )
             ->where('created_at', '>=', Carbon::now()->subWeeks(8))
@@ -136,7 +136,7 @@ class AnalyticsController extends Controller
     private function getDailyGuidanceData()
     {
         return Guidance::select(
-                DB::raw('DATE(created_at) as date'),
+                DB::raw('date(created_at) as date'),
                 DB::raw('COUNT(*) as count')
             )
             ->where('created_at', '>=', Carbon::now()->subDays(30))
@@ -154,8 +154,8 @@ class AnalyticsController extends Controller
     private function getWeeklyGuidanceData()
     {
         return Guidance::select(
-                DB::raw('YEAR(created_at) as year'),
-                DB::raw('WEEK(created_at) as week'),
+                DB::raw('strftime("%Y", created_at) as year'),
+                DB::raw('strftime("%W", created_at) as week'),
                 DB::raw('COUNT(*) as count')
             )
             ->where('created_at', '>=', Carbon::now()->subWeeks(12))
@@ -174,8 +174,8 @@ class AnalyticsController extends Controller
     private function getMonthlyGuidanceData()
     {
         return Guidance::select(
-                DB::raw('YEAR(created_at) as year'),
-                DB::raw('MONTH(created_at) as month'),
+                DB::raw('strftime("%Y", created_at) as year'),
+                DB::raw('strftime("%m", created_at) as month'),
                 DB::raw('COUNT(*) as count')
             )
             ->where('created_at', '>=', Carbon::now()->subMonths(12))
@@ -194,7 +194,7 @@ class AnalyticsController extends Controller
     private function getYearlyGuidanceData()
     {
         return Guidance::select(
-                DB::raw('YEAR(created_at) as year'),
+                DB::raw('strftime("%Y", created_at) as year'),
                 DB::raw('COUNT(*) as count')
             )
             ->groupBy('year')

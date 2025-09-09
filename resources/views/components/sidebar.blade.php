@@ -184,13 +184,19 @@
                 </a>
             </li>
 
-            <li class="menu-item {{ request()->routeIs('dashboard.monitoring.*') ? 'active open' : '' }}">
+            <li class="menu-item {{ request()->routeIs('dashboard.monitoring.*') || request()->routeIs('dashboard.analytics.*') ? 'active open' : '' }}">
                 <a href="javascript:void(0);" class="menu-link menu-toggle">
                     <i class="menu-icon fas fa-chart-line me-2"></i>
-                    <div data-i18n="Monitoring">Monitoring</div>
+                    <div data-i18n="Monitoring">Monitoring & Analytics</div>
                     <i class="menu-arrow fas fa-chevron-down ms-auto"></i>
                 </a>
                 <ul class="menu-sub">
+                    <li class="menu-item {{ request()->routeIs('dashboard.analytics.index') ? 'active' : '' }}">
+                        <a href="{{ route('dashboard.analytics.index') }}" class="menu-link">
+                            <i class="fas fa-chart-pie me-2"></i>
+                            <div data-i18n="Analytics">Analytics Dashboard</div>
+                        </a>
+                    </li>
                     <li class="menu-item {{ request()->routeIs('dashboard.monitoring.index') ? 'active' : '' }}">
                         <a href="{{ route('dashboard.monitoring.index') }}" class="menu-link">
                             <i class="fas fa-list me-2"></i>

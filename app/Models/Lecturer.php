@@ -68,4 +68,9 @@ class Lecturer extends Model
     {
         return formatNIDN($this->nidn);
     }
+
+      public function guidances(): HasMany
+    {
+        return $this->hasMany(\App\Models\Guidance::class, 'lecturer_id');
+    }
 }
