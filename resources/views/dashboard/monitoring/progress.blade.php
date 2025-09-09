@@ -101,21 +101,21 @@
                             <td>{{ $student->approved_guidances_count }} sesi</td>
                             <td>
                                 @php
-                                    $progressPercentage = $student->guidances_count > 0 
-                                        ? ($student->approved_guidances_count / max($student->guidances_count, 1)) * 100 
+                                    $progressPercentage = $student->guidances_count > 0
+                                        ? ($student->approved_guidances_count / max($student->guidances_count, 1)) * 100
                                         : 0;
                                 @endphp
                                 <div class="progress" style="height: 20px;">
-                                    <div class="progress-bar 
+                                    <div class="progress-bar
                                         @if($progressPercentage >= 80) bg-success
                                         @elseif($progressPercentage >= 60) bg-info
                                         @elseif($progressPercentage >= 40) bg-warning
                                         @else bg-danger
-                                        @endif" 
-                                        role="progressbar" 
+                                        @endif"
+                                        role="progressbar"
                                         style="width: {{ $progressPercentage }}%"
-                                        aria-valuenow="{{ $progressPercentage }}" 
-                                        aria-valuemin="0" 
+                                        aria-valuenow="{{ $progressPercentage }}"
+                                        aria-valuemin="0"
                                         aria-valuemax="100">
                                         {{ number_format($progressPercentage, 0) }}%
                                     </div>

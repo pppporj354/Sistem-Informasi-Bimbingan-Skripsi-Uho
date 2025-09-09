@@ -85,7 +85,7 @@
                         <a href="{{ route('dashboard.monitoring.index') }}" class="btn btn-outline-secondary w-100">Reset</a>
                     </div>
                     <div class="col-12">
-                        <a href="{{ route('dashboard.monitoring.export') }}?{{ http_build_query(request()->query()) }}" 
+                        <a href="{{ route('dashboard.monitoring.export') }}?{{ http_build_query(request()->query()) }}"
                            class="btn btn-success w-100">
                             <i class="fas fa-download me-1"></i>Export
                         </a>

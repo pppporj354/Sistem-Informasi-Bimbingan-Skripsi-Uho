@@ -126,13 +126,19 @@
                 </a>
             </li>
 
-            <li class="menu-item {{ request()->routeIs('dashboard.monitoring.*') ? 'active open' : '' }}">
+            <li class="menu-item {{ request()->routeIs('dashboard.monitoring.*') || request()->routeIs('dashboard.analytics.*') ? 'active open' : '' }}">
                 <a href="javascript:void(0);" class="menu-link menu-toggle">
                     <i class="menu-icon fas fa-chart-line me-2"></i>
-                    <div data-i18n="Monitoring">Monitoring</div>
+                    <div data-i18n="Monitoring">Monitoring & Analytics</div>
                     <i class="menu-arrow fas fa-chevron-down ms-auto"></i>
                 </a>
                 <ul class="menu-sub">
+                    <li class="menu-item {{ request()->routeIs('dashboard.analytics.index') ? 'active' : '' }}">
+                        <a href="{{ route('dashboard.analytics.index') }}" class="menu-link">
+                            <i class="fas fa-chart-pie me-2"></i>
+                            <div data-i18n="Analytics">Analytics Dashboard</div>
+                        </a>
+                    </li>
                     <li class="menu-item {{ request()->routeIs('dashboard.monitoring.index') ? 'active' : '' }}">
                         <a href="{{ route('dashboard.monitoring.index') }}" class="menu-link">
                             <i class="fas fa-list me-2"></i>
@@ -232,6 +238,21 @@
                 <a href="{{ route('dashboard.kajur.index') }}" class="menu-link">
                     <i class="menu-icon fas fa-user-tie me-2"></i>
                     <div data-i18n="Kajur">Ketua Jurusan</div>
+                </a>
+            </li>
+
+            <!-- System Administration -->
+            <li class="menu-header small text-uppercase mt-4 mb-2">
+                <span class="menu-header-text">
+                    <i class="fas fa-shield-alt me-2" style="font-size: 12px;"></i>
+                    SISTEM ADMIN
+                </span>
+            </li>
+
+            <li class="menu-item {{ request()->routeIs('dashboard.audit.*') ? 'active' : '' }}">
+                <a href="{{ route('dashboard.audit.index') }}" class="menu-link">
+                    <i class="menu-icon fas fa-clipboard-list me-2"></i>
+                    <div data-i18n="Audit">Audit Trail</div>
                 </a>
             </li>
     @endif

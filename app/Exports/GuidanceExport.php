@@ -71,7 +71,7 @@ class GuidanceExport implements FromQuery, WithHeadings, WithMapping
             $guidance->student->nim ?? '-',
             $guidance->lecturer->user->name ?? '-',
             $guidance->thesis->title ?? '-',
-            $guidance->status_request === 'approved' ? 'Disetujui' : 
+            $guidance->status_request === 'approved' ? 'Disetujui' :
                 ($guidance->status_request === 'pending' ? 'Diajukan' : '-'),
             $guidance->lecturer_notes ?? '-',
         ];

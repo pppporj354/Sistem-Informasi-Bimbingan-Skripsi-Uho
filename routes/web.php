@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\AnalyticsController;
+use App\Http\Controllers\AuditController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ExamResultController;
 use App\Http\Controllers\GuidanceActivityController;
@@ -7,6 +9,7 @@ use App\Http\Controllers\GuidanceController;
 use App\Http\Controllers\GuidedStudentController;
 use App\Http\Controllers\HeadOfDepartementController;
 use App\Http\Controllers\LecturerController;
+use App\Http\Controllers\MonitoringController;
 use App\Http\Controllers\PrintExamApprovalController;
 use App\Http\Controllers\PrintGuidanceHistoryController;
 use App\Http\Controllers\ProfileController;
@@ -14,7 +17,6 @@ use App\Http\Controllers\RequestExamResultController;
 use App\Http\Controllers\SetGuidanceController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\MonitoringController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -54,10 +56,17 @@ Route::middleware('auth')->group(function () {
 
     // Admin only routes
     Route::middleware('can:admin')->group(function () {
+        // User and data management
         Route::resource('/dashboard/kelola-user', UserController::class)->names('dashboard.kelola-user');
         Route::resource('/dashboard/dosen', LecturerController::class)->names('dashboard.lecturer');
         Route::resource('/dashboard/mahasiswa', StudentController::class)->names('dashboard.student');
         Route::resource('/dashboard/ketua-jurusan', HeadOfDepartementController::class)->names('dashboard.kajur');
+
+        // Audit Trail
+        Route::get('/audit', [AuditController::class, 'index'])->name('dashboard.audit.index');
+        Route::get('/audit/{auditLog}', [AuditController::class, 'show'])->name('dashboard.audit.show');
+        Route::get('/audit-activity', [AuditController::class, 'getActivity'])->name('dashboard.audit.activity');
+        Route::get('/audit/export', [AuditController::class, 'export'])->name('dashboard.audit.export');
     });
 
     // Head of Department routes
@@ -67,6 +76,13 @@ Route::middleware('auth')->group(function () {
         Route::get('/monitoring/bimbingan/export', [MonitoringController::class, 'export'])->name('dashboard.monitoring.export');
         Route::get('/monitoring/workload', [MonitoringController::class, 'workload'])->name('dashboard.monitoring.workload');
         Route::get('/monitoring/progress', [MonitoringController::class, 'progress'])->name('dashboard.monitoring.progress');
+
+        // Analytics
+        Route::get('/analytics', [AnalyticsController::class, 'index'])->name('dashboard.analytics.index');
+        Route::get('/analytics/guidance-data', [AnalyticsController::class, 'getGuidanceData'])->name('dashboard.analytics.guidance-data');
+        Route::get('/analytics/lecturer-performance', [AnalyticsController::class, 'getLecturerPerformance'])->name('dashboard.analytics.lecturer-performance');
+        Route::get('/analytics/student-progress', [AnalyticsController::class, 'getStudentProgress'])->name('dashboard.analytics.student-progress');
+
         Route::get('/aktivitas-bimbingan', [GuidanceActivityController::class, 'index'])->name('dashboard.aktivitas-bimbingan.index');
         Route::get('/aktivitas-bimbingan/{aktivitas_bimbingan}', [GuidanceActivityController::class, 'show'])->name('dashboard.aktivitas-bimbingan.show');
         Route::get('/aktivitas-bimbingan/{aktivitas_bimbingan}/edit', [GuidanceActivityController::class, 'edit'])->name('dashboard.aktivitas-bimbingan.edit');

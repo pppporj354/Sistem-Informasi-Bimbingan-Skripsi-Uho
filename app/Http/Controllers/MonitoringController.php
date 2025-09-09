@@ -123,7 +123,7 @@ class MonitoringController extends Controller
         ];
 
         $filename = 'monitoring-bimbingan-' . date('Y-m-d-H-i-s') . '.xlsx';
-        
+
         return Excel::download(new GuidanceExport($filters), $filename);
     }
 
