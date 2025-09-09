@@ -5,7 +5,7 @@
         $homeLink = route('dashboard.bimbingan.index');
     } elseif(Auth::user()->role == 'lecturer') {
         $homeLink = route('dashboard.atur-jadwal-bimbingan.index');
-    } elseif(Auth::user()->role == 'HoD') {
+    } elseif(Auth::user()->role == 'hod') {
         $homeLink = route('dashboard.aktivitas-bimbingan.index');
     } elseif(Auth::user()->role == 'admin') {
         $homeLink = route('dashboard');
@@ -103,7 +103,7 @@
             </li>
     @endif
 
-    @if(Auth::user()->role === 'HoD')
+            @if(Auth::user()->role === 'hod')
             <!-- Head of Department Menu -->
             <li class="menu-header small text-uppercase mt-3 mb-2">
                 <span class="menu-header-text">

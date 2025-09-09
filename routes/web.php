@@ -24,7 +24,7 @@ Route::get('/', function () {
         return redirect()->route('dashboard.student');
     } elseif (Auth::user()->role == 'lecturer') {
         return redirect()->route('dashboard.lecturer');
-    } elseif (Auth::user()->role == 'HoD') {
+    } elseif (Auth::user()->role == 'hod') {
         return redirect()->route('dashboard.hod');
     } elseif (Auth::user()->role == 'admin'){
         return redirect()->route('dashboard');

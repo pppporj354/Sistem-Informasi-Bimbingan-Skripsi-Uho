@@ -24,30 +24,29 @@ class AppServiceProvider extends ServiceProvider
     {
         // Allow admin to bypass all gate checks
         Gate::before(function (User $user, string $ability) {
-            return strtolower($user->role) === 'admin' ? true : null;
+            return $user->role === 'admin' ? true : null;
         });
 
         Gate::define('admin', function (User $user) {
-            return strtolower($user->role) === 'admin'
+            return $user->role === 'admin'
                 ? Response::allow()
                 : Response::deny('You must be an administrator.');
         });
 
         Gate::define('HoD', function (User $user) {
-            $role = strtolower($user->role);
-            return ($role === 'hod' || $role === 'kajur')
+            return ($user->role === 'hod' || $user->role === 'kajur')
                 ? Response::allow()
                 : Response::deny('You must be an head of departement.');
         });
 
         Gate::define('lecturer', function (User $user) {
-            return strtolower($user->role) === 'lecturer'
+            return $user->role === 'lecturer'
                 ? Response::allow()
                 : Response::deny('You must be an lecturer.');
         });
 
         Gate::define('student', function (User $user) {
-            return strtolower($user->role) === 'student'
+            return $user->role === 'student'
                 ? Response::allow()
                 : Response::deny('You must be an student.');
         });

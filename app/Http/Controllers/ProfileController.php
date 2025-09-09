@@ -31,7 +31,7 @@ class ProfileController extends Controller
             $user = Student::where('user_id', $request->user()->id)->with('user')->first();
         } else if ($request->user()->role == 'lecturer') {
             $user = Lecturer::where('user_id', $request->user()->id)->with('user')->first();
-        } else if ($request->user()->role == 'HoD') {
+        } else if ($request->user()->role == 'hod') {
             $user = HeadOfDepartement::where('user_id', $request->user()->id)->with('user')->first();
         }
 

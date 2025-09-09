@@ -79,7 +79,7 @@ class StudentController extends Controller
             $student->lecturer_id_2 = $validatedData['lecturer_id_2'];
             $student->nim = $validatedData['nim'];
             $student->batch = $validatedData['angkatan'];
-            $student->concentration = $validatedData['konsentrasi'];
+            $student->concentration = $this->normalizeConcentration($validatedData['konsentrasi']);
             $student->department = $validatedData['jurusan'] ?? null;
             $student->faculty = $validatedData['fakultas'] ?? null;
             $student->phone_number = $validatedData['no-hp'];
@@ -159,7 +159,7 @@ class StudentController extends Controller
             $mahasiswa->lecturer_id_1 = $validatedData['lecturer_id_1'];
             $mahasiswa->lecturer_id_2 = $validatedData['lecturer_id_2'];
             $mahasiswa->batch = $validatedData['angkatan'];
-            $mahasiswa->concentration = $validatedData['konsentrasi'];
+            $mahasiswa->concentration = $this->normalizeConcentration($validatedData['konsentrasi']);
             $mahasiswa->department = $validatedData['jurusan'] ?? $mahasiswa->department;
             $mahasiswa->faculty = $validatedData['fakultas'] ?? $mahasiswa->faculty;
             $mahasiswa->phone_number = $validatedData['no-hp'];
@@ -199,5 +199,18 @@ class StudentController extends Controller
             DB::rollBack();
             return redirect()->back()->with('toast_error', 'Failed to delete Student. Please try again.');
         }
+    }
+
+    /**
+     * Normalize concentration values to match DB enum
+     */
+    private function normalizeConcentration(string $concentration): string
+    {
+        return match(strtolower($concentration)) {
+            'rpl' => 'RPL',
+            'multimedia' => 'Multimedia',
+            'tkj' => 'TKJ',
+            default => $concentration
+        };
     }
 }

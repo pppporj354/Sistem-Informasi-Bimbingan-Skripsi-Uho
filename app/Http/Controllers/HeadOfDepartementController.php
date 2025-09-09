@@ -68,7 +68,7 @@ class HeadOfDepartementController extends Controller
             $user->email = $validatedData['email'];
             $user->username = $validatedData['nidn'];
             $user->password = Hash::make('kajur' . $validatedData['nidn']);
-            $user->role = 'HoD';
+            $user->role = 'hod';
 
             if ($request->hasFile('foto')) {
                 $file = $request->file('foto');
