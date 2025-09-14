@@ -9,9 +9,11 @@ services:
     restart: always
     env_file:
       - .env
-    # Hanya mount file .env, storage dan database akan diatur di dalam image
     volumes:
+      # Mount hanya file .env, bukan seluruh folder proyek
       - ./.env:/var/www/html/.env
+      # Tambahkan kembali volume untuk database SQLite agar data persisten
+      - db-data:/var/www/html/database
 
   # Service untuk web server Nginx
   webserver:
@@ -25,3 +27,6 @@ services:
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
     depends_on:
       - app
+
+volumes:
+  db-data: {}
