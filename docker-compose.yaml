@@ -1,0 +1,34 @@
+version: "3.8"
+
+services:
+  # Service untuk aplikasi Laravel
+  app:
+    # Build image dari Dockerfile yang ada di direktori saat ini
+    build: .
+    restart: always # Kontainer akan otomatis restart jika terhenti
+    # Tentukan environment variables dari file .env
+    env_file:
+      - .env
+    volumes:
+      # Mount folder proyek lokal ke dalam kontainer
+      - .:/var/www/html
+      # Membuat volume untuk database.sqlite agar datanya tidak hilang
+      - db-data:/var/www/html/database
+
+  # Service untuk web server Nginx
+  webserver:
+    image: nginx:alpine # Menggunakan image Nginx yang ringan
+    restart: always # Kontainer akan otomatis restart jika terhenti
+    ports:
+      - "80:80" # Meneruskan port 80 dari VPS ke kontainer
+    volumes:
+      # Mount folder proyek lokal
+      - .:/var/www/html
+      # Mount konfigurasi Nginx dari folder lokal
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    # Pastikan kontainer 'app' siap sebelum 'webserver' berjalan
+    depends_on:
+      - app
+
+volumes:
+  db-data: {} # Mendefinisikan volume untuk database SQLite
