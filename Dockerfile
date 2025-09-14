@@ -1,7 +1,11 @@
-# Gunakan image PHP resmi versi 8.3 sebagai base image
-FROM php:8.3-fpm-alpine
+# -- STAGE PERTAMA: BUILDER --
+# Gunakan image PHP versi 8.3 untuk menginstal dependensi
+FROM php:8.3-fpm-alpine AS builder
 
-# Install PHP extensions yang diperlukan oleh Laravel
+# Set working directory
+WORKDIR /app
+
+# Instal dependensi PHP yang dibutuhkan
 RUN apk add --no-cache \
     curl \
     sqlite-dev \
@@ -13,23 +17,27 @@ RUN apk add --no-cache \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install pdo_sqlite pdo_mysql gd mbstring zip ctype
 
-# Install Composer
+# Instal Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# Set working directory di dalam container
-WORKDIR /var/www/html
-
-# Salin semua kode aplikasi ke dalam kontainer
-# Ini memastikan file seperti 'artisan' tersedia saat Composer berjalan
+# Salin semua file proyek untuk instalasi Composer
 COPY . .
 
-# Instal dependensi PHP
-# Perintah ini sekarang bisa berjalan tanpa error karena semua file sudah ada
+# Jalankan Composer install
 RUN composer install --no-dev --optimize-autoloader
 
-# Berikan izin yang tepat untuk direktori storage dan cache
-RUN mkdir -p storage storage/framework storage/framework/sessions storage/framework/views storage/framework/cache public/storage \
-    && chown -R www-data:www-data storage bootstrap/cache
+# -- STAGE KEDUA: PRODUKSI --
+# Gunakan image PHP versi 8.3 yang bersih
+FROM php:8.3-fpm-alpine
+
+# Set working directory
+WORKDIR /var/www/html
+
+# Salin semua file dan folder aplikasi dari stage 'builder'
+COPY --from=builder /app /var/www/html
+
+# Berikan izin yang benar untuk direktori storage dan cache
+RUN chown -R www-data:www-data storage bootstrap/cache
 
 # Menjalankan artisan command untuk setup
-CMD ["sh", "-c", "php artisan migrate --force && php artisan db:seed && php-fpm"]
+CMD php artisan migrate --force && php artisan db:seed && php-fpm
