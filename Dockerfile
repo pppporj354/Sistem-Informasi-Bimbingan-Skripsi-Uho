@@ -19,20 +19,17 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 # Set working directory di dalam container
 WORKDIR /var/www/html
 
-# Salin file-file yang dibutuhkan Composer sebelum menginstal dependensi
-COPY composer.json composer.lock ./
-COPY app/ app/
-COPY bootstrap/ bootstrap/
-
-# Instal dependensi PHP
-RUN composer install --no-dev --optimize-autoloader
-
-# Salin sisa semua kode aplikasi
+# Salin semua kode aplikasi ke dalam kontainer
+# Ini memastikan file seperti 'artisan' tersedia saat Composer berjalan
 COPY . .
 
-# Buat direktori storage/framework jika belum ada dan berikan izin yang tepat
+# Instal dependensi PHP
+# Perintah ini sekarang bisa berjalan tanpa error karena semua file sudah ada
+RUN composer install --no-dev --optimize-autoloader
+
+# Berikan izin yang tepat untuk direktori storage dan cache
 RUN mkdir -p storage storage/framework storage/framework/sessions storage/framework/views storage/framework/cache public/storage \
     && chown -R www-data:www-data storage bootstrap/cache
 
 # Menjalankan artisan command untuk setup
-CMD php artisan migrate --force && php artisan db:seed && php-fpm
+CMD ["sh", "-c", "php artisan migrate --force && php artisan db:seed && php-fpm"]
