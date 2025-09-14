@@ -8,7 +8,6 @@ RUN apk add --no-cache \
     libzip-dev \
     libpng-dev \
     oniguruma-dev \
-    # Tambahkan paket ini untuk kebutuhan gd dan zip
     freetype-dev \
     jpeg-dev \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
@@ -20,13 +19,15 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 # Set working directory di dalam container
 WORKDIR /var/www/html
 
-# Salin composer.json dan composer.lock untuk menginstal dependensi
+# Salin file-file yang dibutuhkan Composer sebelum menginstal dependensi
 COPY composer.json composer.lock ./
+COPY app/ app/
+COPY bootstrap/ bootstrap/
 
 # Instal dependensi PHP
 RUN composer install --no-dev --optimize-autoloader
 
-# Salin semua kode aplikasi
+# Salin sisa semua kode aplikasi
 COPY . .
 
 # Buat direktori storage/framework jika belum ada dan berikan izin yang tepat
@@ -34,5 +35,4 @@ RUN mkdir -p storage storage/framework storage/framework/sessions storage/framew
     && chown -R www-data:www-data storage bootstrap/cache
 
 # Menjalankan artisan command untuk setup
-# Perintah ini akan dijalankan saat container dibuat pertama kali
 CMD php artisan migrate --force && php artisan db:seed && php-fpm
