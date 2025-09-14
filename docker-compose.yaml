@@ -18,16 +18,20 @@ services:
     # 'command' tidak lagi dibutuhkan karena sudah dihandle di Dockerfile
 
   # Service untuk web server Nginx
+  # Service untuk web server Nginx
   webserver:
     image: nginx:alpine
     restart: always
     ports:
       - "80:80"
+      - "443:443" # <-- TAMBAHKAN INI
     volumes:
       # Mount seluruh folder proyek agar Nginx dapat menyajikan file statis
       - .:/var/www/html
       # Mount file konfigurasi Nginx
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+      # Mount folder sertifikat Let's Encrypt ke dalam kontainer (read-only)
+      - /etc/letsencrypt:/etc/letsencrypt:ro # <-- TAMBAHKAN INI
     depends_on:
       - app
 
