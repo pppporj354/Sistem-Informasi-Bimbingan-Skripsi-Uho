@@ -12,8 +12,10 @@ services:
     volumes:
       # Mount hanya file .env, bukan seluruh folder proyek
       - ./.env:/var/www/html/.env
-      # Tambahkan kembali volume untuk database SQLite agar data persisten
+      # Volume untuk database SQLite agar data persisten
       - db-data:/var/www/html/database
+    command: >
+      sh -c "chown -R www-data:www-data /var/www/html/database && php-fpm"
 
   # Service untuk web server Nginx
   webserver:
