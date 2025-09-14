@@ -1,14 +1,17 @@
-
-FROM php:8.2-fpm-alpine
+# Gunakan image PHP resmi versi 8.3 sebagai base image
+FROM php:8.3-fpm-alpine
 
 # Install PHP extensions yang diperlukan oleh Laravel
-# sqlite-dev adalah paket yang diperlukan untuk ekstensi pdo_sqlite
 RUN apk add --no-cache \
     curl \
     sqlite-dev \
     libzip-dev \
     libpng-dev \
     oniguruma-dev \
+    # Tambahkan paket ini untuk kebutuhan gd dan zip
+    freetype-dev \
+    jpeg-dev \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install pdo_sqlite pdo_mysql gd mbstring zip ctype
 
 # Install Composer
@@ -31,6 +34,5 @@ RUN mkdir -p storage storage/framework storage/framework/sessions storage/framew
     && chown -R www-data:www-data storage bootstrap/cache
 
 # Menjalankan artisan command untuk setup
-# Karena ini portfolio, kita langsung migrasi dan seed
 # Perintah ini akan dijalankan saat container dibuat pertama kali
 CMD php artisan migrate --force && php artisan db:seed && php-fpm
