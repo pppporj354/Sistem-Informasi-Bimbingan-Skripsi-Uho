@@ -1,13 +1,11 @@
-# Gunakan image PHP resmi sebagai base image
-# Alpine adalah image yang sangat ringan, bagus untuk produksi
+
 FROM php:8.2-fpm-alpine
 
 # Install PHP extensions yang diperlukan oleh Laravel
-# curl, pdo_sqlite, dan pdo_mysql dibutuhkan untuk koneksi database
-# gd dan zip dibutuhkan untuk berbagai fitur
+# sqlite-dev adalah paket yang diperlukan untuk ekstensi pdo_sqlite
 RUN apk add --no-cache \
     curl \
-    sqlite \
+    sqlite-dev \
     libzip-dev \
     libpng-dev \
     oniguruma-dev \
