@@ -1,11 +1,10 @@
 
-# Gunakan image PHP versi 8.3 untuk menginstal dependensi
 FROM php:8.3-fpm-alpine AS builder
 
-# Set working directory
+# Menentukan direktori kerja di dalam kontainer
 WORKDIR /app
 
-# Instal dependensi PHP yang dibutuhkan
+# Instalasi ekstensi dan paket yang dibutuhkan oleh Laravel & Composer
 RUN apk add --no-cache \
     curl \
     sqlite-dev \
@@ -17,28 +16,30 @@ RUN apk add --no-cache \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install pdo_sqlite pdo_mysql gd mbstring zip ctype
 
-# Instal Composer
+# Instal Composer secara global
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# Salin semua file proyek untuk instalasi Composer
+# Salin semua file proyek ke direktori kerja
 COPY . .
 
-# Jalankan Composer install untuk menginstal semua dependensi
-# Kali ini tanpa flag --no-dev agar seeder dapat berjalan
+# Jalankan 'composer install' untuk mengunduh semua package dari vendor
+# Tidak menggunakan flag --no-dev agar seeder bisa berjalan jika dibutuhkan
 RUN composer install
 
-# -- STAGE KEDUA: PRODUKSI --
-# Gunakan image PHP versi 8.3 yang bersih untuk aplikasi
+# --- STAGE KEDUA: PRODUKSI ---
+# Menggunakan image PHP yang bersih dan ringan untuk menjalankan aplikasi
 FROM php:8.3-fpm-alpine
 
-# Set working directory
+# Menentukan direktori kerja utama untuk aplikasi
 WORKDIR /var/www/html
 
-# Salin semua file dan folder aplikasi dari stage 'builder'
+# Salin semua file yang sudah di-build dari stage 'builder'
 COPY --from=builder /app /var/www/html
 
-# Berikan izin yang benar untuk direktori storage dan cache
-RUN chown -R www-data:www-data storage bootstrap/cache
 
-# Jalankan PHP-FPM untuk melayani aplikasi
-CMD php-fpm
+RUN mkdir -p database && \
+    touch database/database.sqlite && \
+    chown -R www-data:www-data storage bootstrap/cache database
+
+# Perintah default untuk menjalankan container ini adalah memulai PHP-FPM
+CMD ["php-fpm"]
