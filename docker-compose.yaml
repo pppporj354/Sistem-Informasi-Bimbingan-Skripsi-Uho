@@ -3,13 +3,16 @@ version: "3.8"
 services:
   # Service untuk aplikasi Laravel
   app:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
     restart: always
     env_file:
       - .env
     volumes:
-      # Mount hanya file .env, bukan seluruh folder proyek
-      - ./.env:/var/www/html/.env
+      # Volume untuk database SQLite dan direktori storage
+      - db-data:/var/www/html/database
+      - ./storage:/var/www/html/storage
 
   # Service untuk web server Nginx
   webserver:
@@ -24,4 +27,4 @@ services:
       - app
 
 volumes:
-  db-data: {} # Mendefinisikan volume untuk database SQLite
+  db-data: {}

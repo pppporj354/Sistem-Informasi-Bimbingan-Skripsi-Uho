@@ -1,4 +1,4 @@
-# -- STAGE PERTAMA: BUILDER --
+
 # Gunakan image PHP versi 8.3 untuk menginstal dependensi
 FROM php:8.3-fpm-alpine AS builder
 
@@ -23,11 +23,12 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 # Salin semua file proyek untuk instalasi Composer
 COPY . .
 
-# Jalankan Composer install
-RUN composer install --no-dev --optimize-autoloader
+# Jalankan Composer install untuk menginstal semua dependensi
+# Kali ini tanpa flag --no-dev agar seeder dapat berjalan
+RUN composer install
 
 # -- STAGE KEDUA: PRODUKSI --
-# Gunakan image PHP versi 8.3 yang bersih
+# Gunakan image PHP versi 8.3 yang bersih untuk aplikasi
 FROM php:8.3-fpm-alpine
 
 # Set working directory
@@ -39,5 +40,5 @@ COPY --from=builder /app /var/www/html
 # Berikan izin yang benar untuk direktori storage dan cache
 RUN chown -R www-data:www-data storage bootstrap/cache
 
-# Menjalankan artisan command untuk setup
-CMD php artisan migrate --force && php artisan db:seed && php-fpm
+# Jalankan PHP-FPM untuk melayani aplikasi
+CMD php-fpm
