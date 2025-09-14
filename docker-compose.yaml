@@ -18,7 +18,6 @@ services:
     # 'command' tidak lagi dibutuhkan karena sudah dihandle di Dockerfile
 
   # Service untuk web server Nginx
-  # Service untuk web server Nginx
   webserver:
     image: nginx:alpine
     restart: always
