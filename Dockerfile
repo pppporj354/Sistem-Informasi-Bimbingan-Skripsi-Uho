@@ -1,44 +1,60 @@
-# --- Tahap 1: Composer Stage ---
-# Menggunakan image resmi Composer untuk menginstal dependensi
-FROM composer:2 as vendor
 
-# Menetapkan direktori kerja
-WORKDIR /app
 
-# Salin hanya file composer untuk caching dependensi
-COPY database/ database/
-COPY composer.json composer.json
-COPY composer.lock composer.lock
+FROM php:8.2-fpm
 
-# Jalankan composer install untuk mengunduh semua paket ke direktori vendor
-RUN composer install \
-    --ignore-platform-reqs \
-    --no-interaction \
-    --no-plugins \
-    --no-scripts \
-    --prefer-dist \
-    --optimize-autoloader \
-    --no-dev
-
-# --- Tahap 2: Production Stage ---
-# Menggunakan image PHP-FPM yang ringan sebagai basis
-FROM php:8.2-fpm-alpine
-
-# Menetapkan direktori kerja
+# Set working directory
 WORKDIR /var/www
 
-# Menginstal ekstensi PHP yang umum dibutuhkan oleh Laravel
-RUN docker-php-ext-install pdo pdo_mysql
+# Install library yang dibutuhkan sistem
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    libpng-dev \
+    libjpeg62-turbo-dev \
+    libfreetype6-dev \
+    locales \
+    zip \
+    jpegoptim optipng pngquant gifsicle \
+    vim \
+    unzip \
+    git \
+    curl \
+    libonig-dev \
+    libzip-dev
 
-# Salin direktori vendor yang sudah diinstal dari tahap sebelumnya
-COPY --from=vendor /app/vendor/ /var/www/vendor/
+# Bersihkan cache apt
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Salin sisa kode aplikasi
-COPY . /var/www/
+# Install ekstensi PHP yang dibutuhkan Laravel
+RUN docker-php-ext-install pdo_mysql mbstring zip exif pcntl
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg
+RUN docker-php-ext-install gd
 
-# Mengatur kepemilikan file agar Nginx/PHP bisa menulis ke direktori storage
-RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache && \
-    chmod -R 775 /var/www/storage /var/www/bootstrap/cache
+# --- BAGIAN PERBAIKAN ---
+# Install Composer menggunakan metode resmi
+RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+RUN php -r "if (hash_file('sha384', 'composer-setup.php') === 'dac665fdc30fdd8ec78b38b9800061b4150413ff2e3b6f88543c636f7cd84f6db9189d43a81e5503cda447da73c7e5b6') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
+RUN php composer-setup.php --install-dir=/usr/local/bin --filename=composer
+RUN php -r "unlink('composer-setup.php');"
+# --- AKHIR BAGIAN PERBAIKAN ---
 
-# Expose port yang digunakan oleh PHP-FPM
+# Buat user untuk aplikasi Laravel
+RUN groupadd -g 1000 www
+RUN useradd -u 1000 -ms /bin/bash -g www www
+
+# Salin file composer terlebih dahulu untuk caching
+COPY --chown=www:www composer.json composer.lock ./
+
+# Install dependensi vendor (ini akan membuat folder /vendor)
+# --no-interaction: jangan tanya apa-apa
+# --optimize-autoloader: optimasi untuk production
+RUN composer install --no-interaction --optimize-autoloader --no-dev
+
+# Salin sisa file aplikasi
+COPY --chown=www:www . .
+
+# Ubah user ke www
+USER www
+
+# Expose port dan jalankan php-fpm
 EXPOSE 9000
+CMD ["php-fpm"]
