@@ -1,54 +1,62 @@
-version: "3.8"
+version: "3"
 services:
+  # Service untuk Aplikasi Laravel (PHP-FPM)
   app:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: sibimbingan-app
+    # PENTING: Beri nama container yang unik
+    container_name: bimbingan-app
     restart: unless-stopped
     working_dir: /var/www/
-
-    networks:
-      - sibimbingan-net
-
-  nginx:
-    image: nginx:alpine
-    container_name: sibimbingan-nginx
-    restart: unless-stopped
     volumes:
-      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./:/var/www
     networks:
-      - sibimbingan-net
-      - nginx-proxy
+      - bimbingan-net # Terhubung ke jaringan internal
 
+  # Service untuk Database MySQL
   db:
-    image: mysql:8.0
-    container_name: sibimbingan-db
+    image: "mysql/mysql-server:8.0"
+    # PENTING: Beri nama container yang unik
+    container_name: bimbingan-db
     restart: unless-stopped
     environment:
-      MYSQL_DATABASE: ${DB_DATABASE}
-      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: "${DB_DATABASE}"
+      MYSQL_ROOT_PASSWORD: "${DB_PASSWORD}"
+      MYSQL_PASSWORD: "${DB_PASSWORD}"
+      MYSQL_USER: "${DB_USERNAME}"
     volumes:
-      - sibimbingan-db-data:/var/lib/mysql
+      # Menyimpan data database secara permanen di volume unik
+      - bimbingan-db-data:/var/lib/mysql
+    ports:
+      # Anda bisa buka port ini jika butuh akses DB dari luar VPS, jika tidak, hapus saja.
+      - "3307:3306"
     networks:
-      - sibimbingan-net
+      - bimbingan-net # Terhubung ke jaringan internal
 
-  redis:
-    image: "redis:alpine"
-    container_name: sibimbingan-redis
+  # Service untuk Nginx "Dalam" yang akan melayani aplikasi Laravel
+  nginx:
+    image: nginx:alpine
+
+    container_name: bimbingan-nginx
     restart: unless-stopped
-    command: redis-server --appendonly yes --requirepass "${REDIS_PASSWORD}"
-    volumes:
-      - sibimbingan-redis-data:/data
-    networks:
-      - sibimbingan-net
 
+    volumes:
+      - ./:/var/www
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    networks:
+      - bimbingan-net
+
+      - nginx-proxy
+
+# Mendefinisikan jaringan yang digunakan
 networks:
-  sibimbingan-net:
+  bimbingan-net:
     driver: bridge
-  nginx-proxy: # Deklarasi jaringan eksternal
+  nginx-proxy:
     external: true
 
+# Mendefinisikan volume untuk database
 volumes:
-  sibimbingan-db-data:
-  sibimbingan-redis-data:
+  bimbingan-db-data:
+    driver: local
