@@ -4,52 +4,51 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: simbimbingan-app
+    container_name: sibimbingan-app
     restart: unless-stopped
     working_dir: /var/www/
-    # VOLUMES DIHAPUS DARI SINI
+
     networks:
-      - simbimbingan-net
+      - sibimbingan-net
 
   nginx:
     image: nginx:alpine
-    container_name: simbimbingan-nginx
+    container_name: sibimbingan-nginx
     restart: unless-stopped
     volumes:
-      # HANYA volume untuk file konfigurasi yang kita butuhkan
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
     networks:
-      - simbimbingan-net
+      - sibimbingan-net
       - nginx-proxy
 
   db:
     image: mysql:8.0
-    container_name: simbimbingan-db
+    container_name: sibimbingan-db
     restart: unless-stopped
     environment:
       MYSQL_DATABASE: ${DB_DATABASE}
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
     volumes:
-      - simbimbingan-db-data:/var/lib/mysql
+      - sibimbingan-db-data:/var/lib/mysql
     networks:
-      - simbimbingan-net
+      - sibimbingan-net
 
   redis:
     image: "redis:alpine"
-    container_name: simbimbingan-redis
+    container_name: sibimbingan-redis
     restart: unless-stopped
     command: redis-server --appendonly yes --requirepass "${REDIS_PASSWORD}"
     volumes:
-      - simbimbingan-redis-data:/data
+      - sibimbingan-redis-data:/data
     networks:
-      - simbimbingan-net
+      - sibimbingan-net
 
 networks:
-  simbimbingan-net:
+  sibimbingan-net:
     driver: bridge
   nginx-proxy: # Deklarasi jaringan eksternal
     external: true
 
 volumes:
-  simbimbingan-db-data:
-  simbimbingan-redis-data:
+  sibimbingan-db-data:
+  sibimbingan-redis-data:
