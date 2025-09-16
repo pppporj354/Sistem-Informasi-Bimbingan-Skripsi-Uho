@@ -1,3 +1,6 @@
+# File: ~/bimbingan/docker-compose.yaml
+# Penjelasan: Versi FINAL. Volume sudah diperbaiki untuk production.
+
 version: "3"
 services:
   # Service untuk Aplikasi Laravel (PHP-FPM)
@@ -5,19 +8,19 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    # PENTING: Beri nama container yang unik
     container_name: bimbingan-app
     restart: unless-stopped
     working_dir: /var/www/
     volumes:
-      - ./:/var/www
+      # Kita hanya memetakan folder storage dan bootstrap/cache agar permanen
+      - ./storage:/var/www/storage
+      - ./bootstrap/cache:/var/www/bootstrap/cache
     networks:
-      - bimbingan-net # Terhubung ke jaringan internal
+      - bimbingan-net
 
   # Service untuk Database MySQL
   db:
     image: "mysql/mysql-server:8.0"
-    # PENTING: Beri nama container yang unik
     container_name: bimbingan-db
     restart: unless-stopped
     environment:
@@ -26,37 +29,31 @@ services:
       MYSQL_PASSWORD: "${DB_PASSWORD}"
       MYSQL_USER: "${DB_USERNAME}"
     volumes:
-      # Menyimpan data database secara permanen di volume unik
       - bimbingan-db-data:/var/lib/mysql
     ports:
-      # Anda bisa buka port ini jika butuh akses DB dari luar VPS, jika tidak, hapus saja.
       - "3307:3306"
     networks:
-      - bimbingan-net # Terhubung ke jaringan internal
+      - bimbingan-net
 
-  # Service untuk Nginx "Dalam" yang akan melayani aplikasi Laravel
+  # Service untuk Nginx "Dalam"
   nginx:
     image: nginx:alpine
-
     container_name: bimbingan-nginx
     restart: unless-stopped
-
+    # Di sini kita masih perlu menimpa seluruh folder agar Nginx bisa melihat file public
     volumes:
       - ./:/var/www
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
     networks:
       - bimbingan-net
-
       - nginx-proxy
 
-# Mendefinisikan jaringan yang digunakan
 networks:
   bimbingan-net:
     driver: bridge
   nginx-proxy:
     external: true
 
-# Mendefinisikan volume untuk database
 volumes:
   bimbingan-db-data:
     driver: local
