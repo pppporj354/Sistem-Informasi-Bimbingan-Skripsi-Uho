@@ -1,40 +1,61 @@
 version: "3.8"
-
-# Mendefinisikan semua service yang akan berjalan
 services:
-  # Service untuk aplikasi Laravel (menjalankan PHP-FPM)
   app:
     build:
       context: .
       dockerfile: Dockerfile
-    restart: always
-    env_file:
-      - .env
+    container_name: simbimbingan-app # Kita beri nama agar mudah dikenali
+    restart: unless-stopped
+    working_dir: /var/www/
     volumes:
-      # Mount file .env dari lokal ke dalam kontainer
-      - ./.env:/var/www/html/.env
-      # Mount volume 'db-data' agar database SQLite persisten
-      - db-data:/var/www/html/database
-    # 'command' tidak lagi dibutuhkan karena sudah dihandle di Dockerfile
+      - ./:/var/www
+    networks:
+      - simbimbingan-net # Jaringan internal untuk proyek ini
 
-  # Service untuk web server Nginx
-  webserver:
+  nginx:
     image: nginx:alpine
-    restart: always
-    ports:
-      - "80:80"
-      - "443:443" # <-- TAMBAHKAN INI
+    container_name: simbimbingan-nginx # Nama ini akan kita gunakan di proxy
+    restart: unless-stopped
+    # BAGIAN 'ports' DI BAWAH INI DIHAPUS
+    # ports:
+    #   - "8000:80"
     volumes:
-      # Mount seluruh folder proyek agar Nginx dapat menyajikan file statis
-      - .:/var/www/html
-      # Mount file konfigurasi Nginx
+      - ./:/var/www
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
-      # Mount folder sertifikat Let's Encrypt ke dalam kontainer (read-only)
-      - /etc/letsencrypt:/etc/letsencrypt:ro # <-- TAMBAHKAN INI
-    depends_on:
-      - app
+    networks:
+      - simbimbingan-net # Terhubung ke jaringan internal
+      - nginx-proxy # Terhubung ke jaringan proxy eksternal
 
-# Mendefinisikan volume yang digunakan oleh service di atas
+  db:
+    image: mysql:8.0
+    container_name: simbimbingan-db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_USER: ${DB_USERNAME}
+    volumes:
+      - simbimbingan-db-data:/var/lib/mysql
+    networks:
+      - simbimbingan-net
+
+  redis:
+    image: "redis:alpine"
+    container_name: simbimbingan-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes --requirepass "${REDIS_PASSWORD}"
+    volumes:
+      - simbimbingan-redis-data:/data
+    networks:
+      - simbimbingan-net
+
+networks:
+  simbimbingan-net:
+    driver: bridge
+  nginx-proxy: # Deklarasi jaringan eksternal
+    external: true
+
 volumes:
-  db-data: {} # Volume untuk menyimpan data database SQLite
-
+  simbimbingan-db-data:
+  simbimbingan-redis-data:
