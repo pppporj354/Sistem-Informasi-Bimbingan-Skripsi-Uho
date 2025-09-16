@@ -1,45 +1,44 @@
+# --- Tahap 1: Composer Stage ---
+# Menggunakan image resmi Composer untuk menginstal dependensi
+FROM composer:2 as vendor
 
-FROM php:8.3-fpm-alpine AS builder
-
-# Menentukan direktori kerja di dalam kontainer
+# Menetapkan direktori kerja
 WORKDIR /app
 
-# Instalasi ekstensi dan paket yang dibutuhkan oleh Laravel & Composer
-RUN apk add --no-cache \
-    curl \
-    sqlite-dev \
-    libzip-dev \
-    libpng-dev \
-    oniguruma-dev \
-    freetype-dev \
-    jpeg-dev \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install pdo_sqlite pdo_mysql gd mbstring zip ctype
+# Salin hanya file composer untuk caching dependensi
+COPY database/ database/
+COPY composer.json composer.json
+COPY composer.lock composer.lock
 
-# Instal Composer secara global
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+# Jalankan composer install untuk mengunduh semua paket ke direktori vendor
+RUN composer install \
+    --ignore-platform-reqs \
+    --no-interaction \
+    --no-plugins \
+    --no-scripts \
+    --prefer-dist \
+    --optimize-autoloader \
+    --no-dev
 
-# Salin semua file proyek ke direktori kerja
-COPY . .
+# --- Tahap 2: Production Stage ---
+# Menggunakan image PHP-FPM yang ringan sebagai basis
+FROM php:8.2-fpm-alpine
 
-# Jalankan 'composer install' untuk mengunduh semua package dari vendor
-# Tidak menggunakan flag --no-dev agar seeder bisa berjalan jika dibutuhkan
-RUN composer install
+# Menetapkan direktori kerja
+WORKDIR /var/www
 
-# --- STAGE KEDUA: PRODUKSI ---
-# Menggunakan image PHP yang bersih dan ringan untuk menjalankan aplikasi
-FROM php:8.3-fpm-alpine
+# Menginstal ekstensi PHP yang umum dibutuhkan oleh Laravel
+RUN docker-php-ext-install pdo pdo_mysql
 
-# Menentukan direktori kerja utama untuk aplikasi
-WORKDIR /var/www/html
+# Salin direktori vendor yang sudah diinstal dari tahap sebelumnya
+COPY --from=vendor /app/vendor/ /var/www/vendor/
 
-# Salin semua file yang sudah di-build dari stage 'builder'
-COPY --from=builder /app /var/www/html
+# Salin sisa kode aplikasi
+COPY . /var/www/
 
+# Mengatur kepemilikan file agar Nginx/PHP bisa menulis ke direktori storage
+RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache && \
+    chmod -R 775 /var/www/storage /var/www/bootstrap/cache
 
-RUN mkdir -p database && \
-    touch database/database.sqlite && \
-    chown -R www-data:www-data storage bootstrap/cache database
-
-# Perintah default untuk menjalankan container ini adalah memulai PHP-FPM
-CMD ["php-fpm"]
+# Expose port yang digunakan oleh PHP-FPM
+EXPOSE 9000
