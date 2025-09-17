@@ -79,7 +79,7 @@ docker-compose exec -u root -T app chmod -R 775 /var/www/storage /var/www/bootst
 
 # Install all composer dependencies first
 echo "Installing all composer dependencies..."
-docker-compose exec -u root -T app composer install --no-dev --optimize-autoloader --no-interaction
+docker-compose exec -u root -T app composer install --optimize-autoloader --no-interaction
 
 # Temporarily install Faker for seeding (only in production)
 echo "Installing Faker for database seeding..."
