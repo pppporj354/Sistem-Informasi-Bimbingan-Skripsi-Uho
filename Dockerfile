@@ -46,6 +46,7 @@ RUN chmod -R 755 /var/www/bootstrap/cache
 # Install PHP dependencies
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 
+
 # Generate application key and run migrations (you might want to do this separately)
 # RUN php artisan key:generate
 # RUN php artisan config:cache
