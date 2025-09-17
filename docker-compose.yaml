@@ -1,24 +1,29 @@
-# File: ~/bimbingan/docker-compose.yaml
-# Penjelasan: Versi FINAL. Volume sudah diperbaiki untuk production.
+version: "3.8"
 
-version: "3"
 services:
-  # Service untuk Aplikasi Laravel (PHP-FPM)
+  # Service Laravel (PHP-FPM), namanya 'app'
   app:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: bimbingan-app
+    container_name: bimbingan-app # Nama kontainer untuk PHP
     restart: unless-stopped
     working_dir: /var/www/
+    command: >
+      sh -c "
+        chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache &&
+        php artisan config:cache &&
+        php artisan route:cache &&
+        php artisan view:cache &&
+        php-fpm
+      "
     volumes:
-      # Kita hanya memetakan folder storage dan bootstrap/cache agar permanen
       - ./storage:/var/www/storage
       - ./bootstrap/cache:/var/www/bootstrap/cache
     networks:
       - bimbingan-net
 
-  # Service untuk Database MySQL
+  # Service Database
   db:
     image: "mysql/mysql-server:8.0"
     container_name: bimbingan-db
@@ -30,23 +35,20 @@ services:
       MYSQL_USER: "${DB_USERNAME}"
     volumes:
       - bimbingan-db-data:/var/lib/mysql
-    ports:
-      - "3307:3306"
     networks:
       - bimbingan-net
 
-  # Service untuk Nginx "Dalam"
+  # Service Nginx "Dalam"
   nginx:
     image: nginx:alpine
-    container_name: bimbingan-nginx
+    container_name: bimbingan-nginx # Nama ini untuk Nginx Proxy Manager
     restart: unless-stopped
-    # Di sini kita masih perlu menimpa seluruh folder agar Nginx bisa melihat file public
     volumes:
       - ./:/var/www
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
     networks:
       - bimbingan-net
-      - nginx-proxy
+      - nginx-proxy # Terhubung ke proxy utama
 
 networks:
   bimbingan-net:
