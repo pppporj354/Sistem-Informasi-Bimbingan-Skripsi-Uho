@@ -67,9 +67,8 @@ docker-compose exec -T app php artisan key:generate --force
 # Wait a bit more for DB to be fully ready
 sleep 15
 
-# Set permissions before installing Faker
-docker-compose exec -T app chown -R www:www /var/www/storage /var/www/bootstrap/cache
-docker-compose exec -T app chmod -R 775 /var/www/storage /var/www/bootstrap/cache
+# Note: Storage and bootstrap/cache permissions are set on host system
+# No need to chown inside container since these are mounted volumes
 
 # Temporarily install Faker for seeding (only in production)
 echo "Installing Faker for database seeding..."
@@ -92,10 +91,6 @@ docker-compose exec -T app php artisan view:cache
 
 # Create storage link
 docker-compose exec -T app php artisan storage:link
-
-# Set proper permissions
-docker-compose exec -T app chown -R www:www /var/www/storage
-docker-compose exec -T app chmod -R 755 /var/www/storage
 
 echo "Deployment completed successfully!"
 echo "Your application should be accessible at port 8080"
