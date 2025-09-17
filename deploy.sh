@@ -67,8 +67,10 @@ docker-compose exec -T app php artisan key:generate --force
 # Wait a bit more for DB to be fully ready
 sleep 15
 
-# Note: Storage and bootstrap/cache permissions are set on host system
-# No need to chown inside container since these are mounted volumes
+# Fix permissions for storage and bootstrap/cache directories in container
+echo "Setting up directory permissions..."
+docker-compose exec -u root -T app chown -R www:www /var/www/storage /var/www/bootstrap/cache
+docker-compose exec -u root -T app chmod -R 775 /var/www/storage /var/www/bootstrap/cache
 
 # Temporarily install Faker for seeding (only in production)
 echo "Installing Faker for database seeding..."
