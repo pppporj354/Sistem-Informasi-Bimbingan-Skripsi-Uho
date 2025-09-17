@@ -32,7 +32,7 @@ class DatabaseSeeder extends Seeder
         // Seeder untuk 10 data user dan dosen
         for ($i = 1; $i <= 5; $i++) {
             $gender = rand(1, 2);
-            
+
             $uuid = Str::uuid();
             $nip = generateNIP($i, $gender);
             $nidn = generateNIDN();
