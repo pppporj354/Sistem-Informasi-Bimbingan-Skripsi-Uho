@@ -48,7 +48,7 @@ RUN chown -R www:www /var/www
 
 
 # Install dependensi vendor
-RUN composer install --no-interaction --optimize-autoloader --no-dev
+RUN composer install --no-interaction --optimize-autoloader
 
 # Ubah user ke www
 USER www
