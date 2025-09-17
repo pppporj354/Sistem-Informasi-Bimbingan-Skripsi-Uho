@@ -56,6 +56,9 @@ RUN composer install --optimize-autoloader --no-interaction
 # Create symbolic link for storage
 RUN php artisan storage:link
 
+# Configure PHP-FPM to listen on all interfaces
+RUN sed -i 's/listen = 127.0.0.1:9000/listen = 0.0.0.0:9000/' /usr/local/etc/php-fpm.d/www.conf
+
 # Change current user to www
 USER www
 
