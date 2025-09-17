@@ -85,11 +85,13 @@ docker-compose exec -u root -T app composer install --optimize-autoloader --no-i
 echo "Installing Faker for database seeding..."
 docker-compose exec -u root -T app composer require fakerphp/faker --dev --no-interaction
 
-# Run migrations
-docker-compose exec -u root -T app php artisan migrate --force
+# Run migrations with fresh database
+echo "Running fresh migrations..."
+docker-compose exec -T app php artisan migrate:fresh --force
 
 # Seed database
-docker-compose exec -u root -T app php artisan db:seed --force
+echo "Seeding database..."
+docker-compose exec -T app php artisan db:seed --force
 
 # Remove Faker after seeding to keep production clean
 echo "Removing Faker from production dependencies..."

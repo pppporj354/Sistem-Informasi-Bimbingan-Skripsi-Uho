@@ -19,11 +19,10 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        User::updateOrCreate([
-            'username' => env('ADMIN_USERNAME'),
-        ], [
+        User::factory()->create([
             'id' => Str::uuid(),
             'name' => env('ADMIN_NAME'),
+            'username' => env('ADMIN_USERNAME'),
             'email' => env('ADMIN_EMAIL'),
             'role' => 'admin',
             'password' => bcrypt(env('ADMIN_PASSWORD')),
