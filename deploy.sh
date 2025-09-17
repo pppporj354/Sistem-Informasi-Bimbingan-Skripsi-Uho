@@ -62,15 +62,24 @@ fi
 echo "Running Laravel setup..."
 
 # Generate app key first
-docker-compose exec -T app php artisan key:generate --force
+docker-compose exec -u root -T app php artisan key:generate --force
 
 # Wait a bit more for DB to be fully ready
 sleep 15
 
 # Fix permissions for storage and bootstrap/cache directories in container
 echo "Setting up directory permissions..."
+docker-compose exec -u root -T app mkdir -p /var/www/storage/logs
+docker-compose exec -u root -T app mkdir -p /var/www/storage/framework/cache/data
+docker-compose exec -u root -T app mkdir -p /var/www/storage/framework/sessions
+docker-compose exec -u root -T app mkdir -p /var/www/storage/framework/views
+docker-compose exec -u root -T app mkdir -p /var/www/bootstrap/cache
 docker-compose exec -u root -T app chown -R www:www /var/www/storage /var/www/bootstrap/cache
 docker-compose exec -u root -T app chmod -R 775 /var/www/storage /var/www/bootstrap/cache
+
+# Install all composer dependencies first
+echo "Installing all composer dependencies..."
+docker-compose exec -u root -T app composer install --no-dev --optimize-autoloader --no-interaction
 
 # Temporarily install Faker for seeding (only in production)
 echo "Installing Faker for database seeding..."
