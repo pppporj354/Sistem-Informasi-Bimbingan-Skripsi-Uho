@@ -46,6 +46,9 @@ RUN chmod -R 755 /var/www/bootstrap/cache
 # Install PHP dependencies
 RUN composer install --optimize-autoloader --no-interaction
 
+# Configure PHP-FPM to listen on all interfaces (must be done as root)
+RUN sed -i 's/listen = 127.0.0.1:9000/listen = 0.0.0.0:9000/' /usr/local/etc/php-fpm.d/www.conf
+RUN cat /usr/local/etc/php-fpm.d/www.conf | grep "listen ="
 
 # Generate application key and run migrations (you might want to do this separately)
 # RUN php artisan key:generate
@@ -55,9 +58,6 @@ RUN composer install --optimize-autoloader --no-interaction
 
 # Create symbolic link for storage
 RUN php artisan storage:link
-
-# Configure PHP-FPM to listen on all interfaces
-RUN sed -i 's/listen = 127.0.0.1:9000/listen = 0.0.0.0:9000/' /usr/local/etc/php-fpm.d/www.conf
 
 # Change current user to www
 USER www
