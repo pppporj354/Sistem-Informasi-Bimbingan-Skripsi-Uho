@@ -1,13 +1,9 @@
-# File: ~/bimbingan/Dockerfile
-# Penjelasan: Versi FINAL. Menyalin file proyek SEBELUM composer install.
-
-# Gunakan base image PHP 8.3-fpm
 FROM php:8.3-fpm
 
 # Set working directory
 WORKDIR /var/www
 
-# Install library yang dibutuhkan sistem
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
     build-essential \
     libpng-dev \
@@ -21,38 +17,47 @@ RUN apt-get update && apt-get install -y \
     git \
     curl \
     libonig-dev \
-    libzip-dev
+    libzip-dev \
+    supervisor
 
-# Bersihkan cache apt
+# Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Install ekstensi PHP yang dibutuhkan Laravel
+# Install PHP extensions
 RUN docker-php-ext-install pdo_mysql mbstring zip exif pcntl
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg
 RUN docker-php-ext-install gd
 
 # Install Composer
-RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-RUN php -r "if (hash_file('sha384', 'composer-setup.php') === 'dac665fdc30fdd8ec78b38b9800061b4150413ff2e3b6f88543c636f7cd84f6db9189d43a81e5503cda447da73c7e5b6') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
-RUN php composer-setup.php --install-dir=/usr/local/bin --filename=composer
-RUN php -r "unlink('composer-setup.php');"
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Buat user untuk aplikasi Laravel
+# Create system user to run Composer and Artisan Commands
 RUN groupadd -g 1000 www
 RUN useradd -u 1000 -ms /bin/bash -g www www
 
-
+# Copy project files
 COPY . .
 
+# Set proper permissions
 RUN chown -R www:www /var/www
+RUN chmod -R 755 /var/www/storage
+RUN chmod -R 755 /var/www/bootstrap/cache
 
+# Install PHP dependencies
+RUN composer install --no-dev --optimize-autoloader --no-interaction
 
-# Install dependensi vendor
-RUN composer install --no-interaction --optimize-autoloader
+# Generate application key and run migrations (you might want to do this separately)
+# RUN php artisan key:generate
+# RUN php artisan config:cache
+# RUN php artisan route:cache
+# RUN php artisan view:cache
 
-# Ubah user ke www
+# Create symbolic link for storage
+RUN php artisan storage:link
+
+# Change current user to www
 USER www
 
-# Expose port dan jalankan php-fpm
+# Expose port 9000 and start php-fpm server
 EXPOSE 9000
 CMD ["php-fpm"]
