@@ -86,10 +86,10 @@ echo "Installing Faker for database seeding..."
 docker-compose exec -u root -T app composer require fakerphp/faker --dev --no-interaction
 
 # Run migrations
-docker-compose exec -T app php artisan migrate --force
+docker-compose exec -u root -T app php artisan migrate --force
 
 # Seed database
-docker-compose exec -T app php artisan db:seed --force
+docker-compose exec -u root -T app php artisan db:seed --force
 
 # Remove Faker after seeding to keep production clean
 echo "Removing Faker from production dependencies..."
