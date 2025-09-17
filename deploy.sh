@@ -68,8 +68,8 @@ docker-compose exec -T app php artisan key:generate --force
 sleep 15
 
 # Set permissions before installing Faker
-docker-compose exec -T app chown -R www:www /var/www
-docker-compose exec -T app chmod -R 775 /var/www
+docker-compose exec -T app chown -R www:www /var/www/storage /var/www/bootstrap/cache
+docker-compose exec -T app chmod -R 775 /var/www/storage /var/www/bootstrap/cache
 
 # Temporarily install Faker for seeding (only in production)
 echo "Installing Faker for database seeding..."
